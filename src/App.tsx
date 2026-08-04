@@ -1,6 +1,5 @@
 import Header from "./components/Header";
 import WalletCard from "./components/WalletCard";
-import SignMessage from "./components/SignMessage";
 
 export default function App() {
   return (
