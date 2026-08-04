@@ -4,30 +4,15 @@ import { connectWallet } from "../services/sphere";
 export default function WalletCard() {
   const [status, setStatus] = useState("Not Connected");
   const [address, setAddress] = useState("--");
+  const [connected, setConnected] = useState(false);
 
-  async function handleConnectWallet()
-  async function handleDisconnect() {
-  try {
-    const result = await connectWallet();
-
-    await result.disconnect();
-
-    setConnected(false);
-    setStatus("Not Connected");
-    setAddress("--");
-  } catch (err) {
-    console.error(err);
-  }
-  }{
+  async function handleConnectWallet() {
     try {
       setStatus("Connecting...");
 
       const result = await connectWallet();
 
-      setAddress(
-        result.connection.identity?.directAddress || "--"
-      );
-
+      setAddress(result.connection.identity?.directAddress || "--");
       setStatus("Connected ✅");
       setConnected(true);
     } catch (err: any) {
@@ -40,6 +25,20 @@ export default function WalletCard() {
       );
 
       setStatus("Connection Failed");
+    }
+  }
+
+  async function handleDisconnect() {
+    try {
+      const result = await connectWallet();
+
+      await result.disconnect();
+
+      setConnected(false);
+      setStatus("Not Connected");
+      setAddress("--");
+    } catch (err) {
+      console.error(err);
     }
   }
 
@@ -67,14 +66,14 @@ export default function WalletCard() {
       </p>
 
       {connected ? (
-  <button onClick={handleDisconnect}>
-    Disconnect Wallet
-  </button>
-) : (
-  <button onClick={handleConnectWallet}>
-    Connect Wallet
-  </button>
-)}
+        <button onClick={handleDisconnect}>
+          Disconnect Wallet
+        </button>
+      ) : (
+        <button onClick={handleConnectWallet}>
+          Connect Wallet
+        </button>
+      )}
     </div>
   );
 }
