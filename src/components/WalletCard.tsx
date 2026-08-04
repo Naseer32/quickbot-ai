@@ -3,14 +3,16 @@ import { getSphere } from "../services/sphere";
 
 export default function WalletCard() {
   const [status, setStatus] = useState("Not Connected");
+  const [address, setAddress] = useState("--");
 
-  async function createWallet() {
+  async function connectWallet() {
     try {
       setStatus("Connecting...");
 
-      await getSphere();
+      const sphere = await getSphere();
 
-      setStatus("Sphere Ready ✅");
+      setAddress(sphere.identity?.directAddress || "--");
+      setStatus("Connected ✅");
     } catch (err) {
       console.error(err);
       setStatus("Connection Failed");
@@ -33,15 +35,15 @@ export default function WalletCard() {
       </p>
 
       <p>
-        <strong>Address:</strong> --
+        <strong>Address:</strong> {address}
       </p>
 
       <p>
         <strong>Balance:</strong> 0 UCT
       </p>
 
-      <button onClick={createWallet}>
-        Create Wallet
+      <button onClick={connectWallet}>
+        Connect Wallet
       </button>
     </div>
   );
