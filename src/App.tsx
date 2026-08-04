@@ -1,5 +1,6 @@
 import Header from "./components/Header";
 import WalletCard from "./components/WalletCard";
+import SignMessage from "./components/SignMessage";
 
 export default function App() {
   return (
@@ -21,6 +22,7 @@ export default function App() {
         </p>
 
         <WalletCard />
+<SignMessage />
       </main>
     </div>
   );
