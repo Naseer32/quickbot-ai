@@ -30,20 +30,7 @@ const signed = await result.client.intent("sign_message", {
       // Get all wallet assets
 
       // Get balance for each asset using its coinId
-      const assetBalances = await Promise.all(
-        walletAssets.map(async (asset: any) => {
-          const balance = await result.client.query("sphere_getBalance", {
-            coinId: asset.coinId,
-          });
-
-          return {
-            ...asset,
-            balance,
-          };
-        })
-      );
-
-      setAssets(assetBalances);
+      setAssets(walletAssets);
 
       setStatus("Connected ✅");
       setConnected(true);
