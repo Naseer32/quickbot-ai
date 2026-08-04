@@ -20,7 +20,7 @@ export default function WalletCard() {
       </p>
 
       <p>
-        <strong>Balance:</strong> 0 USDC
+        <strong>Balance:</strong> 0 UCT
       </p>
 
       <button
