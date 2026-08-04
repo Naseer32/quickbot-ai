@@ -1,28 +1,31 @@
 import { useState } from "react";
-import { getSphere } from "../services/sphere";
+import { connectWallet } from "../services/sphere";
 
 export default function WalletCard() {
   const [status, setStatus] = useState("Not Connected");
   const [address, setAddress] = useState("--");
 
-  async function connectWallet() {
+  async function handleConnectWallet() {
     try {
       setStatus("Connecting...");
 
-      const sphere = await getSphere();
+      const result = await connectWallet();
 
-      setAddress(sphere.identity?.directAddress || "--");
+      setAddress(
+        result.connection.identity?.directAddress || "--"
+      );
+
       setStatus("Connected ✅");
     } catch (err: any) {
-  console.error(err);
+      console.error(err);
 
-  alert(
-    err?.message ||
-    JSON.stringify(err, null, 2) ||
-    "Unknown error"
-  );
+      alert(
+        err?.message ||
+        JSON.stringify(err, null, 2) ||
+        "Unknown error"
+      );
 
-  setStatus("Connection Failed");
+      setStatus("Connection Failed");
     }
   }
 
@@ -49,7 +52,7 @@ export default function WalletCard() {
         <strong>Balance:</strong> 0 UCT
       </p>
 
-      <button onClick={connectWallet}>
+      <button onClick={handleConnectWallet}>
         Connect Wallet
       </button>
     </div>
