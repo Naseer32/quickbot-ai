@@ -7,25 +7,34 @@ export default function WalletCard() {
   const [connected, setConnected] = useState(false);
 
   async function handleConnectWallet() {
-    try {
-      setStatus("Connecting...");
+  try {
+    setStatus("Connecting...");
 
-      const result = await connectWallet();
+    const result = await connectWallet();
 
-      setAddress(result.connection.identity?.directAddress || "--");
-      setStatus("Connected ✅");
-      setConnected(true);
-    } catch (err: any) {
-      console.error(err);
+    setAddress(result.connection.identity?.directAddress || "--");
 
-      alert(
-        err?.message ||
-        JSON.stringify(err, null, 2) ||
-        "Unknown error"
-      );
+    setStatus("Connected ✅");
 
-      setStatus("Connection Failed");
-    }
+    // Automatically ask the wallet to sign
+    const signed = await result.client.intent("sign_message", {
+      message: "Welcome to QuickBot AI",
+    });
+
+    console.log("Signature:", signed.signature);
+
+    alert("Wallet connected and signed successfully ✅");
+  } catch (err: any) {
+    console.error(err);
+
+    alert(
+      err?.message ||
+      JSON.stringify(err, null, 2) ||
+      "Unknown error"
+    );
+
+    setStatus("Connection Failed");
+  }
   }
 
   async function handleDisconnect() {
