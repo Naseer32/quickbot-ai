@@ -5,6 +5,7 @@ export default function WalletCard() {
   const [status, setStatus] = useState("Not Connected");
   const [address, setAddress] = useState("--");
   const [connected, setConnected] = useState(false);
+  const [balance, setBalance] = useState("0 UCT");
 
   async function handleConnectWallet() {
     try {
@@ -13,6 +14,9 @@ export default function WalletCard() {
       const result = await connectWallet();
 
       setAddress(result.connection.identity?.directAddress || "--");
+      const walletBalance = await result.client.query("sphere_getBalance");
+
+setBalance(String(walletBalance));
 
       // Automatically ask the wallet to sign
       const signed = await result.client.intent("sign_message", {
@@ -74,7 +78,7 @@ export default function WalletCard() {
       </p>
 
       <p>
-        <strong>Balance:</strong> 0 UCT
+        <strong>Balance:</strong> {balance}
       </p>
 
       {connected ? (
