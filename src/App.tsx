@@ -21,7 +21,6 @@ export default function App() {
         </p>
 
         <WalletCard />
-<SignMessage />
       </main>
     </div>
   );
