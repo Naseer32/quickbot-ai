@@ -27,10 +27,6 @@ const signed = await result.client.intent("sign_message", {
 
 console.log("Signature:", signed.signature);
 
-// Ask wallet to sign
-const signed = await result.client.intent("sign_message", {
-  message: "Welcome to QuickBot AI",
-});
 
       console.log("Signature:", signed.signature);
 
