@@ -14,6 +14,9 @@ export default function WalletCard() {
       const result = await connectWallet();
 
       setAddress(result.connection.identity?.directAddress || "--");
+      const walletAssets = await result.client.query("sphere_getAssets");
+
+alert(JSON.stringify(walletAssets, null, 2));
 
       // Ask wallet to sign
       const signed = await result.client.intent("sign_message", {
