@@ -7,34 +7,37 @@ export default function WalletCard() {
   const [connected, setConnected] = useState(false);
 
   async function handleConnectWallet() {
-  try {
-    setStatus("Connecting...");
+    try {
+      setStatus("Connecting...");
 
-    const result = await connectWallet();
+      const result = await connectWallet();
 
-    setAddress(result.connection.identity?.directAddress || "--");
+      setAddress(result.connection.identity?.directAddress || "--");
 
-    setStatus("Connected ✅");
+      // Automatically ask the wallet to sign
+      const signed = await result.client.intent("sign_message", {
+        message: "Welcome to QuickBot AI",
+      });
 
-    // Automatically ask the wallet to sign
-    const signed = await result.client.intent("sign_message", {
-      message: "Welcome to QuickBot AI",
-    });
+      console.log("Signature:", signed.signature);
 
-    console.log("Signature:", signed.signature);
+      setStatus("Connected ✅");
+      setConnected(true);
 
-    alert("Wallet connected and signed successfully ✅");
-  } catch (err: any) {
-    console.error(err);
+      alert("Wallet connected and signed successfully ✅");
+    } catch (err: any) {
+      console.error(err);
 
-    alert(
-      err?.message ||
-      JSON.stringify(err, null, 2) ||
-      "Unknown error"
-    );
+      alert(
+        err?.message ||
+        JSON.stringify(err, null, 2) ||
+        "Unknown error"
+      );
 
-    setStatus("Connection Failed");
-  }
+      setStatus("Connection Failed");
+      setConnected(false);
+      setAddress("--");
+    }
   }
 
   async function handleDisconnect() {
@@ -43,9 +46,9 @@ export default function WalletCard() {
 
       await result.disconnect();
 
-      setConnected(false);
       setStatus("Not Connected");
       setAddress("--");
+      setConnected(false);
     } catch (err) {
       console.error(err);
     }
@@ -85,4 +88,4 @@ export default function WalletCard() {
       )}
     </div>
   );
-}
+        }
