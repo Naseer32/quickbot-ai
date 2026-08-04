@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { initSphere } from "../services/sphere";
+import { getSphere } from "../services/sphere";
 
 export default function WalletCard() {
   const [status, setStatus] = useState("Not Connected");
@@ -8,7 +8,7 @@ export default function WalletCard() {
     try {
       setStatus("Connecting...");
 
-      await initSphere();
+      await getSphere();
 
       setStatus("Sphere Ready ✅");
     } catch (err) {
