@@ -26,7 +26,6 @@ alert(JSON.stringify(walletAssets, null, 2));
       console.log("Signature:", signed.signature);
 
       // Get all wallet assets
-      const walletAssets = await result.client.query("sphere_getAssets");
 
       // Get balance for each asset using its coinId
       const assetBalances = await Promise.all(
