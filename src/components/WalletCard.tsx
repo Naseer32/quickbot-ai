@@ -1,4 +1,22 @@
+import { useState } from "react";
+import { initSphere } from "../services/sphere";
+
 export default function WalletCard() {
+  const [status, setStatus] = useState("Not Connected");
+
+  async function createWallet() {
+    try {
+      setStatus("Connecting...");
+
+      await initSphere();
+
+      setStatus("Sphere Ready ✅");
+    } catch (err) {
+      console.error(err);
+      setStatus("Connection Failed");
+    }
+  }
+
   return (
     <div
       style={{
@@ -6,13 +24,12 @@ export default function WalletCard() {
         borderRadius: "12px",
         padding: "20px",
         marginTop: "24px",
-        textAlign: "left",
       }}
     >
       <h3>💼 Sphere Wallet</h3>
 
       <p>
-        <strong>Status:</strong> Not Connected
+        <strong>Status:</strong> {status}
       </p>
 
       <p>
@@ -23,14 +40,7 @@ export default function WalletCard() {
         <strong>Balance:</strong> 0 UCT
       </p>
 
-      <button
-        style={{
-          marginTop: "12px",
-          padding: "10px 20px",
-          borderRadius: "8px",
-          cursor: "pointer",
-        }}
-      >
+      <button onClick={createWallet}>
         Create Wallet
       </button>
     </div>
