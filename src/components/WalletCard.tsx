@@ -108,8 +108,9 @@ const signed = await result.client.intent("sign_message", {
                 </p>
 
                 <p>
-                  <strong>Balance:</strong> {String(asset.balance)}
-                </p>
+  <strong>Balance:</strong>{" "}
+  {Number(asset.confirmedAmount) / Math.pow(10, asset.decimals)} {asset.symbol}
+</p>
 
                 <p>
                   <strong>Coin ID:</strong> {asset.coinId}
