@@ -14,16 +14,16 @@ export default function WalletCard() {
       const result = await connectWallet();
 
       setAddress(result.connection.identity?.directAddress || "--");
-      const walletAssets = await result.client.query("sphere_getAssets");
 
-for (const asset of walletAssets) {
-  alert(JSON.stringify(asset, null, 2));
-}
+const walletAssets = await result.client.query("sphere_getAssets");
 
-      // Ask wallet to sign
-      const signed = await result.client.intent("sign_message", {
-        message: "Welcome to QuickBot AI",
-      });
+alert(JSON.stringify(walletAssets[0], null, 2));
+return;
+
+// Ask wallet to sign
+const signed = await result.client.intent("sign_message", {
+  message: "Welcome to QuickBot AI",
+});
 
       console.log("Signature:", signed.signature);
 
