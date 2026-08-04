@@ -5,7 +5,20 @@ export default function WalletCard() {
   const [status, setStatus] = useState("Not Connected");
   const [address, setAddress] = useState("--");
 
-  async function handleConnectWallet() {
+  async function handleConnectWallet()
+  async function handleDisconnect() {
+  try {
+    const result = await connectWallet();
+
+    await result.disconnect();
+
+    setConnected(false);
+    setStatus("Not Connected");
+    setAddress("--");
+  } catch (err) {
+    console.error(err);
+  }
+  }{
     try {
       setStatus("Connecting...");
 
@@ -16,6 +29,7 @@ export default function WalletCard() {
       );
 
       setStatus("Connected ✅");
+      setConnected(true);
     } catch (err: any) {
       console.error(err);
 
@@ -52,9 +66,15 @@ export default function WalletCard() {
         <strong>Balance:</strong> 0 UCT
       </p>
 
-      <button onClick={handleConnectWallet}>
-        Connect Wallet
-      </button>
+      {connected ? (
+  <button onClick={handleDisconnect}>
+    Disconnect Wallet
+  </button>
+) : (
+  <button onClick={handleConnectWallet}>
+    Connect Wallet
+  </button>
+)}
     </div>
   );
 }
