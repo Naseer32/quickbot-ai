@@ -13,9 +13,16 @@ export default function WalletCard() {
 
       setAddress(sphere.identity?.directAddress || "--");
       setStatus("Connected ✅");
-    } catch (err) {
-      console.error(err);
-      setStatus("Connection Failed");
+    } catch (err: any) {
+  console.error(err);
+
+  alert(
+    err?.message ||
+    JSON.stringify(err, null, 2) ||
+    "Unknown error"
+  );
+
+  setStatus("Connection Failed");
     }
   }
 
