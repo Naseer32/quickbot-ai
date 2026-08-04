@@ -1,37 +1,20 @@
-import { Sphere } from "@unicitylabs/sphere-sdk";
-import { createBrowserProviders } from "@unicitylabs/sphere-sdk/impl/browser";
-import { createWalletApiProviders } from "@unicitylabs/sphere-sdk/impl/shared/wallet-api";
+import { autoConnect } from "@unicitylabs/sphere-sdk/connect/browser";
+import { SPHERE_NETWORKS } from "@unicitylabs/sphere-sdk/connect";
 
-let sphere: Sphere | null = null;
+let connection: any = null;
 
-export async function getSphere() {
-  if (sphere) return sphere;
+export async function connectWallet() {
+  if (connection) return connection;
 
-  const base = createBrowserProviders({
-    network: "testnet",
-    oracle: {
-      apiKey: "sk_ddc3cfcc001e4a28ac3fad7407f99590",
+  connection = await autoConnect({
+    dapp: {
+      name: "QuickBot AI",
+      url: window.location.origin,
     },
+    walletUrl: "https://sphere.unicity.network",
+    network: SPHERE_NETWORKS.testnet2,
+    silent: false,
   });
 
-  const providers = createWalletApiProviders(base, {
-    baseUrl: "https://wallet-api.unicity.network",
-    network: "testnet2",
-    deviceId: "quickbot-ai-device",
-  });
-
-  const result = await Sphere.init({
-  ...providers,
-  network: "testnet",
-  autoGenerate: true,
-});
-
-  if (result.created && result.generatedMnemonic) {
-    alert(
-      "Save your recovery phrase:\n\n" + result.generatedMnemonic
-    );
-  }
-
-  sphere = result.sphere;
-  return sphere;
+  return connection;
 }
