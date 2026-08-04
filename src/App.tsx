@@ -1,4 +1,5 @@
 import Header from "./components/Header";
+import WalletCard from "./components/WalletCard";
 
 export default function App() {
   return (
@@ -10,27 +11,16 @@ export default function App() {
           maxWidth: "800px",
           margin: "40px auto",
           padding: "20px",
-          textAlign: "center",
           fontFamily: "Arial, sans-serif",
         }}
       >
         <h2>Welcome to QuickBot AI</h2>
 
         <p>
-          Create a Sphere wallet, chat with an AI assistant, and manage your
-          Web3 assets from one place.
+          Your AI-powered Web3 assistant built with the Unicity Sphere SDK.
         </p>
 
-        <button
-          style={{
-            padding: "12px 24px",
-            fontSize: "16px",
-            borderRadius: "8px",
-            cursor: "pointer",
-          }}
-        >
-          Create Sphere Wallet
-        </button>
+        <WalletCard />
       </main>
     </div>
   );
