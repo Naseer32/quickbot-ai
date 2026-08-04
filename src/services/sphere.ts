@@ -21,9 +21,10 @@ export async function getSphere() {
   });
 
   const result = await Sphere.init({
-    ...providers,
-    autoGenerate: true,
-  });
+  ...providers,
+  network: "testnet",
+  autoGenerate: true,
+});
 
   if (result.created && result.generatedMnemonic) {
     alert(
