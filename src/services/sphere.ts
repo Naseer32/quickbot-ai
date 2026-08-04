@@ -2,7 +2,7 @@ import { Sphere } from "@unicitylabs/sphere-sdk";
 
 let sphere: Sphere | null = null;
 
-export async function initSphere() {
+export async function getSphere() {
   if (sphere) return sphere;
 
   const result = await Sphere.init({
