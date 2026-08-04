@@ -5,7 +5,7 @@ export default function WalletCard() {
   const [status, setStatus] = useState("Not Connected");
   const [address, setAddress] = useState("--");
   const [connected, setConnected] = useState(false);
-  const [balance, setBalance] = useState("0 UCT");
+  const [assets, setAssets] = useState<any[]>([]);
 
   async function handleConnectWallet() {
     try {
@@ -14,16 +14,32 @@ export default function WalletCard() {
       const result = await connectWallet();
 
       setAddress(result.connection.identity?.directAddress || "--");
-      const walletBalance = await result.client.query("sphere_getBalance");
 
-setBalance(String(walletBalance));
-
-      // Automatically ask the wallet to sign
+      // Ask wallet to sign
       const signed = await result.client.intent("sign_message", {
         message: "Welcome to QuickBot AI",
       });
 
       console.log("Signature:", signed.signature);
+
+      // Get all wallet assets
+      const walletAssets = await result.client.query("sphere_getAssets");
+
+      // Get balance for each asset using its coinId
+      const assetBalances = await Promise.all(
+        walletAssets.map(async (asset: any) => {
+          const balance = await result.client.query("sphere_getBalance", {
+            coinId: asset.coinId,
+          });
+
+          return {
+            ...asset,
+            balance,
+          };
+        })
+      );
+
+      setAssets(assetBalances);
 
       setStatus("Connected ✅");
       setConnected(true);
@@ -34,13 +50,14 @@ setBalance(String(walletBalance));
 
       alert(
         err?.message ||
-        JSON.stringify(err, null, 2) ||
-        "Unknown error"
+          JSON.stringify(err, null, 2) ||
+          "Unknown error"
       );
 
       setStatus("Connection Failed");
       setConnected(false);
       setAddress("--");
+      setAssets([]);
     }
   }
 
@@ -53,6 +70,7 @@ setBalance(String(walletBalance));
       setStatus("Not Connected");
       setAddress("--");
       setConnected(false);
+      setAssets([]);
     } catch (err) {
       console.error(err);
     }
@@ -77,14 +95,42 @@ setBalance(String(walletBalance));
         <strong>Address:</strong> {address}
       </p>
 
-      <p>
-        <strong>Balance:</strong> {balance}
-      </p>
-
       {connected ? (
-        <button onClick={handleDisconnect}>
-          Disconnect Wallet
-        </button>
+        <>
+          <h4>Wallet Assets</h4>
+
+          {assets.length === 0 ? (
+            <p>No assets found.</p>
+          ) : (
+            assets.map((asset: any) => (
+              <div
+                key={asset.coinId}
+                style={{
+                  border: "1px solid #ddd",
+                  borderRadius: "8px",
+                  padding: "10px",
+                  marginBottom: "10px",
+                }}
+              >
+                <p>
+                  <strong>Symbol:</strong> {asset.symbol}
+                </p>
+
+                <p>
+                  <strong>Balance:</strong> {String(asset.balance)}
+                </p>
+
+                <p>
+                  <strong>Coin ID:</strong> {asset.coinId}
+                </p>
+              </div>
+            ))
+          )}
+
+          <button onClick={handleDisconnect}>
+            Disconnect Wallet
+          </button>
+        </>
       ) : (
         <button onClick={handleConnectWallet}>
           Connect Wallet
@@ -92,4 +138,4 @@ setBalance(String(walletBalance));
       )}
     </div>
   );
-        }
+      }
