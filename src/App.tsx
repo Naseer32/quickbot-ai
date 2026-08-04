@@ -1,31 +1,37 @@
+import Header from "./components/Header";
+
 export default function App() {
   return (
-    <main
-      style={{
-        minHeight: "100vh",
-        display: "flex",
-        flexDirection: "column",
-        justifyContent: "center",
-        alignItems: "center",
-        fontFamily: "Arial, sans-serif",
-        textAlign: "center",
-        padding: "20px",
-      }}
-    >
-      <h1>🤖 QuickBot AI</h1>
+    <div>
+      <Header />
 
-      <p>Your AI-powered Web3 assistant built on Unicity Sphere.</p>
-
-      <button
+      <main
         style={{
-          padding: "12px 24px",
-          fontSize: "16px",
-          cursor: "pointer",
-          borderRadius: "8px",
+          maxWidth: "800px",
+          margin: "40px auto",
+          padding: "20px",
+          textAlign: "center",
+          fontFamily: "Arial, sans-serif",
         }}
       >
-        Create Sphere Wallet
-      </button>
-    </main>
+        <h2>Welcome to QuickBot AI</h2>
+
+        <p>
+          Create a Sphere wallet, chat with an AI assistant, and manage your
+          Web3 assets from one place.
+        </p>
+
+        <button
+          style={{
+            padding: "12px 24px",
+            fontSize: "16px",
+            borderRadius: "8px",
+            cursor: "pointer",
+          }}
+        >
+          Create Sphere Wallet
+        </button>
+      </main>
+    </div>
   );
-          }
+}
