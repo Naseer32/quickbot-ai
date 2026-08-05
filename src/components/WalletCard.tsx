@@ -45,8 +45,7 @@ console.log("Signature:", signed.signature);
 setStatus("Connected ✅");
 setConnected(true);
 
-
-      alert("Wallet connected and signed successfully ✅");
+return;
     } catch (err: any) {
       console.error(err);
 
