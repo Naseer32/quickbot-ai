@@ -126,9 +126,10 @@ const signed = await result.client.intent("sign_message", {
 </div>
 
       <p>
-        <strong>Balance:</strong>{" "}
-        (Number(asset.confirmedAmount) / Math.pow(10, asset.decimals)).toLocaleString() {asset.symbol}
-      </p>
+  <strong>Balance:</strong>{" "}
+  {(Number(asset.confirmedAmount) / Math.pow(10, asset.decimals)).toLocaleString()}{" "}
+  {asset.symbol}
+</p>
 
       <p>
         <strong>Value:</strong> ${asset.fiatValueUsd.toLocaleString(undefined, {
