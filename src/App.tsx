@@ -1,5 +1,6 @@
 import Header from "./components/Header";
 import WalletCard from "./components/WalletCard";
+import Chat from "./components/Chat";
 
 export default function App() {
   return (
