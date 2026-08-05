@@ -19,6 +19,10 @@ export default function WalletCard() {
 
       const walletAssets = await result.client.query("sphere_getAssets");
 
+console.log("walletAssets =", walletAssets);
+
+alert(JSON.stringify(walletAssets, null, 2));
+
       const assetList = Array.isArray(walletAssets)
         ? walletAssets
         : walletAssets.assets ?? [];
