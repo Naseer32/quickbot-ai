@@ -93,46 +93,47 @@ const signed = await result.client.intent("sign_message", {
           <h4>Wallet Assets</h4>
 
           {assets.length === 0 ? (
-            <p>No assets found.</p>
-          ) : (
-            assets.map((asset: any) => (
-              <div
-                key={asset.coinId}
-                style={{
-                  border: "1px solid #ddd",
-                  borderRadius: "8px",
-                  padding: "10px",
-                  marginBottom: "10px",
-                }}
-              >
-                <img
-  src={asset.iconUrl}
-  alt={asset.symbol}
-  width={32}
-  height={32}
-/>
+  <p>No assets found.</p>
+) : (
+  assets.map((asset: any) => (
+    <div
+      key={asset.coinId}
+      style={{
+        border: "1px solid #ddd",
+        borderRadius: "8px",
+        padding: "10px",
+        marginBottom: "10px",
+      }}
+    >
+      <img
+        src={asset.iconUrl}
+        alt={asset.symbol}
+        width={32}
+        height={32}
+      />
 
-<h4>
-  {asset.name} ({asset.symbol})
-</h4>
+      <h4>
+        {asset.name} ({asset.symbol})
+      </h4>
 
-<p>
-  <strong>Balance:</strong>{" "}
-  {Number(asset.confirmedAmount) / Math.pow(10, asset.decimals)} {asset.symbol}
-</p>
+      <p>
+        <strong>Balance:</strong>{" "}
+        {Number(asset.confirmedAmount) / Math.pow(10, asset.decimals)} {asset.symbol}
+      </p>
 
-<p>
-  <strong>Value:</strong> ${asset.fiatValueUsd.toFixed(2)}
-</p>
+      <p>
+        <strong>Value:</strong> ${asset.fiatValueUsd.toFixed(2)}
+      </p>
 
-<p>
-  <strong>24h:</strong>{" "}
-  {(asset.change24h * 100).toFixed(2)}%
-</p>
-            ))
-          )}
+      <p>
+        <strong>24h:</strong>{" "}
+        {(asset.change24h * 100).toFixed(2)}%
+      </p>
+    </div>
+  ))
+)}
 
-          <button onClick={handleDisconnect}>
+<button onClick={handleDisconnect}>
             Disconnect Wallet
           </button>
         </>
