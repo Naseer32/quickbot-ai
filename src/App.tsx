@@ -22,6 +22,7 @@ export default function App() {
         </p>
 
         <WalletCard />
+        <Chat />
       </main>
     </div>
   );
