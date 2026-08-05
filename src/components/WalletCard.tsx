@@ -17,25 +17,22 @@ export default function WalletCard() {
 
 const walletAssets = await result.client.query("sphere_getAssets");
 
+// Remove this after testing if you no longer need it
 alert(JSON.stringify(walletAssets, null, 2));
 
-setAssets(walletAssets);
+setAssets(Array.isArray(walletAssets) ? walletAssets : walletAssets.assets ?? []);
 
 // Automatically ask the wallet to sign
 const signed = await result.client.intent("sign_message", {
   message: "Welcome to QuickBot AI",
 });
 
+console.log("Signature:", signed.signature);
 
-      console.log("Signature:", signed.signature);
+setStatus("Connected ✅");
+setConnected(true);
 
-      // Get all wallet assets
-
-      // Get balance for each asset using its coinId
-      setAssets(walletAssets);
-
-      setStatus("Connected ✅");
-      setConnected(true);
+alert("Wallet connected and signed successfully ✅");
 
       alert("Wallet connected and signed successfully ✅");
     } catch (err: any) {
