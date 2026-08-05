@@ -201,8 +201,9 @@ alert("Wallet connected and signed successfully ✅");
     </div>
   ))
 )}
-            Disconnect Wallet
-          </button>
+            <button onClick={handleDisconnect}>
+  Disconnect Wallet
+</button>
         </>
       ) : (
         <button onClick={handleConnectWallet}>
