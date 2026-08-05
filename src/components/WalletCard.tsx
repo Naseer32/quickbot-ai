@@ -105,30 +105,46 @@ const signed = await result.client.intent("sign_message", {
         marginBottom: "10px",
       }}
     >
-      <img
-        src={asset.iconUrl}
-        alt={asset.symbol}
-        width={32}
-        height={32}
-      />
+      <div
+  style={{
+    display: "flex",
+    alignItems: "center",
+    gap: "10px",
+    marginBottom: "10px",
+  }}
+>
+  <img
+    src={asset.iconUrl}
+    alt={asset.symbol}
+    width={32}
+    height={32}
+  />
 
-      <h4>
-        {asset.name} ({asset.symbol})
-      </h4>
+  <h4 style={{ margin: 0 }}>
+    {asset.name} ({asset.symbol})
+  </h4>
+</div>
 
       <p>
         <strong>Balance:</strong>{" "}
-        {Number(asset.confirmedAmount) / Math.pow(10, asset.decimals)} {asset.symbol}
+        (Number(asset.confirmedAmount) / Math.pow(10, asset.decimals)).toLocaleString() {asset.symbol}
       </p>
 
       <p>
-        <strong>Value:</strong> ${asset.fiatValueUsd.toFixed(2)}
+        <strong>Value:</strong> ${asset.fiatValueUsd.toLocaleString(undefined, {
+  minimumFractionDigits: 2,
+  maximumFractionDigits: 2,
+})}
       </p>
 
-      <p>
-        <strong>24h:</strong>{" "}
-        {(asset.change24h * 100).toFixed(2)}%
-      </p>
+      <p
+  style={{
+    color: asset.change24h >= 0 ? "green" : "red",
+  }}
+>
+  <strong>24h:</strong>{" "}
+  {(asset.change24h * 100).toFixed(2)}%
+</p>
     </div>
   ))
 )}
