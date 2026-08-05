@@ -142,7 +142,7 @@ alert("Wallet connected and signed successfully ✅");
 
 <h4>Wallet Assets</h4>
 
-          {assets.length === 0 ? (
+{assets.length === 0 ? (
   <p>No assets found.</p>
 ) : (
   assets.map((asset: any) => (
@@ -156,50 +156,51 @@ alert("Wallet connected and signed successfully ✅");
       }}
     >
       <div
-  style={{
-    display: "flex",
-    alignItems: "center",
-    gap: "10px",
-    marginBottom: "10px",
-  }}
->
-  <img
-    src={asset.iconUrl}
-    alt={asset.symbol}
-    width={32}
-    height={32}
-  />
+        style={{
+          display: "flex",
+          alignItems: "center",
+          gap: "10px",
+          marginBottom: "10px",
+        }}
+      >
+        <img
+          src={asset.iconUrl}
+          alt={asset.symbol}
+          width={32}
+          height={32}
+        />
 
-  <h4 style={{ margin: 0 }}>
-    {asset.name} ({asset.symbol})
-  </h4>
-</div>
-
-      <p>
-  <strong>Balance:</strong>{" "}
-  {(Number(asset.confirmedAmount) / Math.pow(10, asset.decimals)).toLocaleString()}{" "}
-  {asset.symbol}
-</p>
+        <h4 style={{ margin: 0 }}>
+          {asset.name} ({asset.symbol})
+        </h4>
+      </div>
 
       <p>
-        <strong>Value:</strong> ${asset.fiatValueUsd.toLocaleString(undefined, {
-  minimumFractionDigits: 2,
-  maximumFractionDigits: 2,
-})}
+        <strong>Balance:</strong>{" "}
+        {(Number(asset.confirmedAmount) / Math.pow(10, asset.decimals)).toLocaleString()}{" "}
+        {asset.symbol}
       </p>
-     <p
-  style={{
-    color: (asset.change24h ?? 0) >= 0 ? "green" : "red",
-  }}
->
-  <strong>24h:</strong>{" "}
-  {((asset.change24h ?? 0) * 100).toFixed(2)}%
-</p>
+
+      <p>
+        <strong>Value:</strong>{" "}
+        $
+        {Number(asset.fiatValueUsd ?? 0).toLocaleString(undefined, {
+          minimumFractionDigits: 2,
+          maximumFractionDigits: 2,
+        })}
+      </p>
+
+      <p
+        style={{
+          color: (asset.change24h ?? 0) >= 0 ? "green" : "red",
+        }}
+      >
+        <strong>24h:</strong>{" "}
+        {((asset.change24h ?? 0) * 100).toFixed(2)}%
+      </p>
     </div>
   ))
 )}
-
-<button onClick={handleDisconnect}>
             Disconnect Wallet
           </button>
         </>
