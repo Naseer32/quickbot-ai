@@ -45,7 +45,6 @@ console.log("Signature:", signed.signature);
 setStatus("Connected ✅");
 setConnected(true);
 
-alert("Wallet connected and signed successfully ✅");
 
       alert("Wallet connected and signed successfully ✅");
     } catch (err: any) {
@@ -77,6 +76,14 @@ alert("Wallet connected and signed successfully ✅");
     } catch (err) {
       console.error(err);
     }
+  }
+  async function copyAddress() {
+  try {
+    await navigator.clipboard.writeText(address);
+    alert("Address copied!");
+  } catch {
+    alert("Failed to copy address.");
+  }
   }
 
   return (
@@ -182,13 +189,12 @@ alert("Wallet connected and signed successfully ✅");
       </p>
 
       <p>
-        <strong>Value:</strong>{" "}
-        $
-        {Number(asset.fiatValueUsd ?? 0).toLocaleString(undefined, {
-          minimumFractionDigits: 2,
-          maximumFractionDigits: 2,
-        })}
-      </p>
+  <strong>Total Value:</strong> $
+  {totalValue.toLocaleString(undefined, {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  })}
+</p>
 
       <p
         style={{
