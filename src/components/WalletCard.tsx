@@ -17,6 +17,7 @@ export default function WalletCard() {
 
 const walletAssets = await result.client.query("sphere_getAssets");
 
+alert(JSON.stringify(walletAssets, null, 2));
 
 setAssets(walletAssets);
 
@@ -24,8 +25,6 @@ setAssets(walletAssets);
 const signed = await result.client.intent("sign_message", {
   message: "Welcome to QuickBot AI",
 });
-
-console.log("Signature:", signed.signature);
 
 
       console.log("Signature:", signed.signature);
