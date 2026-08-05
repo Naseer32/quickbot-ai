@@ -95,8 +95,17 @@ alert("Wallet connected and signed successfully ✅");
       </p>
 
       <p>
-        <strong>Address:</strong> {address}
-      </p>
+  <strong>Address:</strong> {address}
+</p>
+
+<button
+  onClick={copyAddress}
+  style={{
+    marginBottom: "20px",
+  }}
+>
+  📋 Copy Address
+</button>
 
       {connected ? (
         <>
