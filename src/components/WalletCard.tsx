@@ -6,7 +6,8 @@ export default function WalletCard() {
   const [address, setAddress] = useState("--");
   const [connected, setConnected] = useState(false);
   const [assets, setAssets] = useState<any[]>([]);
-
+  const [totalValue, setTotalValue] = useState(0);
+  const [walletName, setWalletName] = useState("");
   async function handleConnectWallet() {
     try {
       setStatus("Connecting...");
@@ -20,7 +21,19 @@ const walletAssets = await result.client.query("sphere_getAssets");
 // Remove this after testing if you no longer need it
 alert(JSON.stringify(walletAssets, null, 2));
 
-setAssets(Array.isArray(walletAssets) ? walletAssets : walletAssets.assets ?? []);
+const assetList = Array.isArray(walletAssets)
+  ? walletAssets
+  : walletAssets.assets ?? [];
+
+setAssets(assetList);
+
+const total = assetList.reduce(
+  (sum: number, asset: any) => sum + (asset.fiatValueUsd || 0),
+  0
+);
+
+setTotalValue(total);
+setWalletName(result.connection.identity?.directAddress || "--");
 
 // Automatically ask the wallet to sign
 const signed = await result.client.intent("sign_message", {
@@ -87,7 +100,38 @@ alert("Wallet connected and signed successfully ✅");
 
       {connected ? (
         <>
-          <h4>Wallet Assets</h4>
+          <h4>💰 Portfolio</h4>
+
+<div
+  style={{
+    border: "1px solid #ddd",
+    borderRadius: "12px",
+    padding: "16px",
+    marginBottom: "20px",
+    background: "#f8f8f8",
+  }}
+>
+  <p>
+    <strong>Total Value:</strong> $
+    {totalValue.toLocaleString(undefined, {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
+    })}
+  </p>
+
+  <p>
+    <strong>Assets:</strong> {assets.length} Tokens
+  </p>
+
+  <p>
+    <strong>Wallet:</strong>{" "}
+    {walletName.length > 24
+      ? walletName.slice(0, 18) + "..."
+      : walletName}
+  </p>
+</div>
+
+<h4>Wallet Assets</h4>
 
           {assets.length === 0 ? (
   <p>No assets found.</p>
