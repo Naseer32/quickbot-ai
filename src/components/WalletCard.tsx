@@ -187,14 +187,13 @@ alert("Wallet connected and signed successfully ✅");
   maximumFractionDigits: 2,
 })}
       </p>
-
-      <p
+     <p
   style={{
-    color: asset.change24h >= 0 ? "green" : "red",
+    color: (asset.change24h ?? 0) >= 0 ? "green" : "red",
   }}
 >
-  <strong>24h:</strong>{"
-    ((asset.change24h ?? 0) * 100).toFixed(2)
+  <strong>24h:</strong>{" "}
+  {((asset.change24h ?? 0) * 100).toFixed(2)}%
 </p>
     </div>
   ))
