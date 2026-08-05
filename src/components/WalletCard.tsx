@@ -98,8 +98,11 @@ alert(JSON.stringify(walletAssets, null, 2));
       </p>
 
       <p>
-        <strong>Address:</strong> {address}
-      </p>
+  <strong>Address:</strong>{" "}
+  {address === "--"
+    ? "--"
+    : `${address.slice(0, 18)}...${address.slice(-8)}`}
+</p>
 
       <button
         onClick={copyAddress}
