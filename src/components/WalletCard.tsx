@@ -105,19 +105,30 @@ const signed = await result.client.intent("sign_message", {
                   marginBottom: "10px",
                 }}
               >
-                <p>
-                  <strong>Symbol:</strong> {asset.symbol}
-                </p>
+                <img
+  src={asset.iconUrl}
+  alt={asset.symbol}
+  width={32}
+  height={32}
+/>
 
-                <p>
+<h4>
+  {asset.name} ({asset.symbol})
+</h4>
+
+<p>
   <strong>Balance:</strong>{" "}
   {Number(asset.confirmedAmount) / Math.pow(10, asset.decimals)} {asset.symbol}
 </p>
 
-                <p>
-                  <strong>Coin ID:</strong> {asset.coinId}
-                </p>
-              </div>
+<p>
+  <strong>Value:</strong> ${asset.fiatValueUsd.toFixed(2)}
+</p>
+
+<p>
+  <strong>24h:</strong>{" "}
+  {(asset.change24h * 100).toFixed(2)}%
+</p>
             ))
           )}
 
