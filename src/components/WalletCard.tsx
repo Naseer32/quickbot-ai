@@ -120,13 +120,13 @@ alert("Wallet connected and signed successfully ✅");
     background: "#f8f8f8",
   }}
 >
-  <p>
-    <strong>Total Value:</strong> $
-    {totalValue.toLocaleString(undefined, {
-      minimumFractionDigits: 2,
-      maximumFractionDigits: 2,
-    })}
-  </p>
+   <p>
+  <strong>Value:</strong> $
+  {Number(asset.fiatValueUsd ?? 0).toLocaleString(undefined, {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  })}
+</p>
 
   <p>
     <strong>Assets:</strong> {assets.length} Tokens
@@ -193,8 +193,8 @@ alert("Wallet connected and signed successfully ✅");
     color: asset.change24h >= 0 ? "green" : "red",
   }}
 >
-  <strong>24h:</strong>{" "}
-  {(asset.change24h * 100).toFixed(2)}%
+  <strong>24h:</strong>{"
+    ((asset.change24h ?? 0) * 100).toFixed(2)
 </p>
     </div>
   ))
