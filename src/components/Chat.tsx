@@ -46,8 +46,14 @@ export default function Chat() {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          message: userMessage,
-        }),
+  messages: [
+    ...messages,
+    {
+      sender: "user",
+      text: userMessage,
+    },
+  ],
+}),
       });
 
       const data = await response.json();
