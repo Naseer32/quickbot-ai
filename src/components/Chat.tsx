@@ -38,6 +38,9 @@ export default function Chat() {
 
     setInput("");
     setLoading(true);
+    const wallet = JSON.parse(
+  localStorage.getItem("quickbot-wallet") || "{}"
+);
 
     try {
       const response = await fetch("/api/chat", {
