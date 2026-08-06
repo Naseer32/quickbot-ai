@@ -71,6 +71,20 @@ export default function Chat() {
 
     setLoading(false);
   }
+  function newChat() {
+  const welcome = [
+    {
+      sender: "bot",
+      text: "👋 Hi! I'm QuickBot AI. Ask me anything about Web3.",
+    },
+  ];
+
+  setMessages(welcome);
+  localStorage.setItem(
+    "quickbot-chat",
+    JSON.stringify(welcome)
+  );
+  }
 
   return (
     <div
@@ -82,6 +96,15 @@ export default function Chat() {
       }}
     >
       <h3>🤖 QuickBot AI</h3>
+      <button
+  onClick={newChat}
+  style={{
+    marginBottom: 15,
+    padding: "8px 16px",
+  }}
+>
+  🗑️ New Chat
+</button>
 
       <div
         style={{
