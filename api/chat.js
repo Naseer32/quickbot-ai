@@ -31,7 +31,12 @@ export default async function handler(req, res) {
       }
     );
 
-    const data = await response.json();
+    const text = await response.text();
+
+console.log("Status:", response.status);
+console.log("Body:", text);
+
+return res.status(response.status).send(text);
 
     console.log("Status:", response.status);
     console.log("Response:", data);
