@@ -1,25 +1,28 @@
 export default async function handler(req, res) {
   if (req.method !== "POST") {
-    return res.status(405).json({ error: "Method not allowed" });
+    return res.status(405).json({
+      reply: "Method not allowed",
+    });
   }
 
   const { message } = req.body;
 
   try {
     const response = await fetch(
-      "https://agentrouter.org/v1/chat/completions",
+      "https://api.groq.com/openai/v1/chat/completions",
       {
         method: "POST",
         headers: {
-          Authorization: `Bearer ${process.env.AGENTROUTER_API_KEY}`,
+          Authorization: `Bearer ${process.env.GROQ_API_KEY}`,
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          model: "claude-opus-4-8",
+          model: "llama-3.3-70b-versatile",
           messages: [
             {
               role: "system",
-              content: "You are QuickBot AI, a helpful Web3 assistant.",
+              content:
+                "You are QuickBot AI, a friendly AI assistant specializing in Web3, blockchain, crypto, DeFi, NFTs, wallets, and smart contracts.",
             },
             {
               role: "user",
@@ -27,23 +30,18 @@ export default async function handler(req, res) {
             },
           ],
           temperature: 0.7,
+          max_tokens: 1024,
         }),
       }
     );
 
-    const text = await response.text();
+    const data = await response.json();
 
-console.log("Status:", response.status);
-console.log("Body:", text);
-
-return res.status(response.status).send(text);
-
-    console.log("Status:", response.status);
-    console.log("Response:", data);
+    console.log(data);
 
     if (!response.ok) {
       return res.status(response.status).json({
-        reply: JSON.stringify(data, null, 2),
+        reply: data.error?.message || "Groq API error",
       });
     }
 
@@ -54,7 +52,7 @@ return res.status(response.status).send(text);
     console.error(err);
 
     return res.status(500).json({
-      reply: err.message || JSON.stringify(err),
+      reply: "Failed to contact Groq.",
     });
   }
-  }
+}
