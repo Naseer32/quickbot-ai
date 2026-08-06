@@ -33,6 +33,14 @@ alert(JSON.stringify(walletAssets, null, 2));
         (sum: number, asset: any) => sum + (asset.fiatValueUsd || 0),
         0
       );
+      localStorage.setItem(
+  "quickbot-wallet",
+  JSON.stringify({
+    address: result.connection.identity?.directAddress,
+    assets: assetList,
+    totalValue: total,
+  })
+);
 
       setTotalValue(total);
       setWalletName(result.connection.identity?.directAddress || "--");
