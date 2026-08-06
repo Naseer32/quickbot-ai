@@ -42,7 +42,14 @@ localStorage.setItem(
   "quickbot-wallet",
   JSON.stringify({
     address: cleanAddress,
-    assets: assetList,
+    assets: assetList.map((asset: any) => ({
+      symbol: asset.symbol,
+      name: asset.name,
+      balance:
+        Number(asset.confirmedAmount) /
+        Math.pow(10, asset.decimals),
+      value: asset.fiatValueUsd ?? 0,
+    })),
     totalValue: total,
   })
 );
