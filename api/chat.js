@@ -5,7 +5,7 @@ export default async function handler(req, res) {
     });
   }
 
-  const { message } = req.body;
+  const { messages } = req.body;
 
   try {
     const response = await fetch(
