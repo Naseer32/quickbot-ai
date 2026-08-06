@@ -11,7 +11,7 @@ export default async function handler(req, res) {
       {
         method: "POST",
         headers: {
-          "Authorization": `Bearer ${process.env.AGENTROUTER_API_KEY}`,
+          Authorization: `Bearer ${process.env.AGENTROUTER_API_KEY}`,
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
@@ -19,8 +19,7 @@ export default async function handler(req, res) {
           messages: [
             {
               role: "system",
-              content:
-                "You are QuickBot AI, a helpful Web3 assistant.",
+              content: "You are QuickBot AI, a helpful Web3 assistant.",
             },
             {
               role: "user",
@@ -35,21 +34,22 @@ export default async function handler(req, res) {
     const data = await response.json();
 
     console.log("Status:", response.status);
-console.log("Response:", data);
+    console.log("Response:", data);
 
-if (!response.ok) {
-  return res.status(response.status).json({
-    reply: JSON.stringify(data, null, 2),
-  });
-}
+    if (!response.ok) {
+      return res.status(response.status).json({
+        reply: JSON.stringify(data, null, 2),
+      });
+    }
 
-    res.status(200).json({
+    return res.status(200).json({
       reply: data.choices[0].message.content,
     });
   } catch (err) {
-  console.error(err);
+    console.error(err);
 
-  res.status(500).json({
-    reply: err.message || JSON.stringify(err),
-  });
+    return res.status(500).json({
+      reply: err.message || JSON.stringify(err),
+    });
+  }
   }
