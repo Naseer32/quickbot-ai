@@ -179,6 +179,44 @@ const [loading, setLoading] = useState(false);
       </button>
     </div>
   </div>
+    {showHistory && (
+  <div
+    style={{
+      border: "1px solid #ddd",
+      borderRadius: 8,
+      padding: 10,
+      marginBottom: 15,
+      maxHeight: 180,
+      overflowY: "auto",
+      background: "#fafafa",
+    }}
+  >
+    {conversations.length === 0 ? (
+      <p>No saved chats.</p>
+    ) : (
+      conversations.map((chat, index) => (
+        <button
+          key={chat.id ?? index}
+          onClick={() => {
+            setMessages(chat.messages);
+            setCurrentChatId(chat.id);
+            setShowHistory(false);
+          }}
+          style={{
+            display: "block",
+            width: "100%",
+            textAlign: "left",
+            marginBottom: 8,
+            padding: "8px",
+            cursor: "pointer",
+          }}
+        >
+          {chat.title}
+        </button>
+      ))
+    )}
+  </div>
+)}
       <div
         style={{
           height: 300,
