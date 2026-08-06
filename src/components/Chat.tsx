@@ -16,6 +16,12 @@ export default function Chat() {
 
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
+  useEffect(() => {
+  localStorage.setItem(
+    "quickbot-chat",
+    JSON.stringify(messages)
+  );
+}, [messages]);
 
   async function sendMessage() {
     if (!input.trim()) return;
