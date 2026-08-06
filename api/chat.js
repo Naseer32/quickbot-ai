@@ -19,16 +19,15 @@ export default async function handler(req, res) {
         body: JSON.stringify({
           model: "llama-3.3-70b-versatile",
           messages: [
-            {
-              role: "system",
-              content:
-                "You are QuickBot AI, a friendly AI assistant specializing in Web3, blockchain, crypto, DeFi, NFTs, wallets, and smart contracts.",
-            },
-            {
-              role: "user",
-              content: message,
-            },
-          ],
+  {
+    role: "system",
+    content: "You are QuickBot AI, a helpful Web3 assistant.",
+  },
+  ...messages.map((msg) => ({
+    role: msg.sender === "bot" ? "assistant" : "user",
+    content: msg.text,
+  })),
+],
           temperature: 0.7,
           max_tokens: 1024,
         }),
