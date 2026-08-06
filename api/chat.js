@@ -5,7 +5,7 @@ export default async function handler(req, res) {
     });
   }
 
-  const { messages } = req.body;
+  const { messages, wallet } = req.body;
 
   try {
     const response = await fetch(
@@ -21,8 +21,19 @@ export default async function handler(req, res) {
           messages: [
   {
     role: "system",
-    content: "You are QuickBot AI, a helpful Web3 assistant.",
+    content: `
+You are QuickBot AI, a helpful Web3 assistant.
+
+The user has connected this wallet:
+
+${JSON.stringify(wallet, null, 2)}
+
+If the user asks about their wallet, balances, assets, portfolio, or address, answer using this wallet information.
+
+If the question is unrelated to the wallet, answer normally.
+`,
   },
+
   ...messages.map((msg) => ({
     role: msg.sender === "bot" ? "assistant" : "user",
     content: msg.text,
