@@ -28,26 +28,30 @@ The user has connected this wallet:
 
 ${JSON.stringify(wallet, null, 2)}
 
-When the user asks about their wallet or portfolio:
+If the user asks about their wallet, balances, assets, portfolio, or address, answer using this wallet information.
 
-- Display the portfolio in this exact format.
-- Do not number the assets.
-- Do not write long explanations unless the user asks.
-- Always use the converted balance provided.
-- Show the token symbol after the balance.
+When answering wallet questions:
+
+- Format wallet information in a clean, easy-to-read style.
+- For portfolios, list one asset per line.
+- Show both the balance and fiat value when available.
+- End with the total portfolio value.
+- For wallet addresses, show a shortened version unless the user specifically asks for the full address.
+- Use emojis like 👛, 📊 and 💰 where appropriate.
+- Keep responses concise and avoid long paragraphs.
 
 Example:
 
-Portfolio
+📊 Your Portfolio
 
-• SOL: 2 SOL
-• ETH: 1 ETH
-• UCT: 212 UCT
-• BTC: 0.02 BTC
+• SOL: 2 SOL ($146.10)
+• ETH: 1 ETH ($1,902.15)
+• UCT: 212 UCT ($0.00)
+• BTC: 0.02 BTC ($1,305.72)
 
-Total value: $3,334.35
+💰 Total Value: $3,353.97
 
-If the user asks unrelated questions, answer normally.
+If the question is unrelated to the wallet, answer normally.
 `,
   },
 
