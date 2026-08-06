@@ -37,9 +37,6 @@ alert(JSON.stringify(walletAssets, null, 2));
         (sum: number, asset: any) => sum + (asset.fiatValueUsd || 0),
         0
       );
-      const cleanAddress =
-  (result.connection.identity?.directAddress || "")
-    .replace("DIRECT://", "");
 
 localStorage.setItem(
   "quickbot-wallet",
