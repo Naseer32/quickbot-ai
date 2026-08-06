@@ -40,7 +40,7 @@ const [loading, setLoading] = useState(false);
         messages,
       },
       ...conversations.filter(
-        (c) => c.messages !== messages
+        (c) => c.id !== currentChatId
       ),
     ];
 
@@ -162,16 +162,7 @@ const [loading, setLoading] = useState(false);
       </button>
 
       <button
-        onClick={() => {
-          setShowHistory(!showHistory);
-          alert(
-            conversations.length
-              ? conversations
-                  .map((c, i) => `${i + 1}. ${c.title}`)
-                  .join("\n\n")
-              : "No saved chats."
-          );
-        }}
+        onClick={() => setShowHistory(!showHistory)}
         style={{
           padding: "8px 16px",
         }}
