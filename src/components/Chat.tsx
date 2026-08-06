@@ -109,6 +109,10 @@ const [conversations, setConversations] = useState(() => {
     setLoading(false);
   }
   function newChat() {
+  const newId = Date.now();
+
+  setCurrentChatId(newId);
+
   const welcome = [
     {
       sender: "bot",
@@ -117,6 +121,7 @@ const [conversations, setConversations] = useState(() => {
   ];
 
   setMessages(welcome);
+
   localStorage.setItem(
     "quickbot-chat",
     JSON.stringify(welcome)
