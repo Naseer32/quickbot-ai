@@ -1,12 +1,18 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 export default function Chat() {
-  const [messages, setMessages] = useState([
-    {
-      sender: "bot",
-      text: "👋 Hi! I'm QuickBot AI. Ask me anything about Web3.",
-    },
-  ]);
+  const [messages, setMessages] = useState(() => {
+  const saved = localStorage.getItem("quickbot-chat");
+
+  return saved
+    ? JSON.parse(saved)
+    : [
+        {
+          sender: "bot",
+          text: "👋 Hi! I'm QuickBot AI. Ask me anything about Web3.",
+        },
+      ];
+});
 
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
