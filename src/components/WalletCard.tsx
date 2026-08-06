@@ -15,9 +15,13 @@ export default function WalletCard() {
 
       const result = await connectWallet();
 
-      setAddress(cleanAddress || "--");
+const cleanAddress =
+  (result.connection.identity?.directAddress || "")
+    .replace("DIRECT://", "");
 
-      const walletAssets = await result.client.query("sphere_getAssets");
+setAddress(cleanAddress || "--");
+
+const walletAssets = await result.client.query("sphere_getAssets");
 
 console.log("walletAssets =", walletAssets);
 
