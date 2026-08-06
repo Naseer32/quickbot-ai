@@ -32,7 +32,7 @@ const [conversations, setConversations] = useState(() => {
 
     const updated = [
       {
-        id: Date.now(),
+        id: currentChatId,
         title,
         messages,
       },
