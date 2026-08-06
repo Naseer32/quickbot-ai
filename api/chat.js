@@ -48,7 +48,10 @@ export default async function handler(req, res) {
         });
       }
 
-      console.log(model, data);
+      return res.status(500).json({
+  model,
+  data,
+});
     }
 
     return res.status(500).json({
