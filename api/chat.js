@@ -9,47 +9,56 @@ export default async function handler(req, res) {
     return res.status(400).json({ error: "Message is required" });
   }
 
+  const models = [
+    "gemini-2.5-flash-lite",
+    "gemini-2.5-flash",
+    "gemini-2.0-flash",
+    "gemini-1.5-flash",
+    "gemini-1.5-pro",
+  ];
+
   try {
-    const response = await fetch(
-      https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-lite:generateContent?key=
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          contents: [
-            {
-              parts: [
-                {
-                  text: message,
-                },
-              ],
-            },
-          ],
-        }),
+    for (const model of models) {
+      const response = await fetch(
+        `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${process.env.GEMINI_API_KEY}`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            contents: [
+              {
+                parts: [
+                  {
+                    text: message,
+                  },
+                ],
+              },
+            ],
+          }),
+        }
+      );
+
+      const data = await response.json();
+
+      if (response.ok && data?.candidates?.[0]?.content?.parts?.[0]?.text) {
+        return res.status(200).json({
+          reply: data.candidates[0].content.parts[0].text,
+        });
       }
-    );
 
-        const data = await response.json();
-
-    console.log(data);
-
-    if (!response.ok) {
-      return res.status(500).json({
-        reply: JSON.stringify(data),
-      });
+      console.log(model, data);
     }
 
-    const reply = data.candidates[0].content.parts[0].text;
-
-    return res.status(200).json({ reply });
-
+    return res.status(500).json({
+      reply: "No Gemini model worked.",
+    });
   } catch (error) {
     console.error(error);
 
     return res.status(500).json({
-      reply: "Sorry, I couldn't generate a response.",
+      reply: error.message,
     });
   }
-}
+                }
