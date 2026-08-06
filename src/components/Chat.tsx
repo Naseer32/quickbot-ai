@@ -51,12 +51,12 @@ export default function Chat() {
         body: JSON.stringify({
   messages: [
     ...messages,
-    wallet,
     {
       sender: "user",
       text: userMessage,
     },
   ],
+  wallet,
 }),
       });
 
