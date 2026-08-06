@@ -28,9 +28,26 @@ The user has connected this wallet:
 
 ${JSON.stringify(wallet, null, 2)}
 
-If the user asks about their wallet, balances, assets, portfolio, or address, answer using this wallet information.
+When the user asks about their wallet or portfolio:
 
-If the question is unrelated to the wallet, answer normally.
+- Display the portfolio in this exact format.
+- Do not number the assets.
+- Do not write long explanations unless the user asks.
+- Always use the converted balance provided.
+- Show the token symbol after the balance.
+
+Example:
+
+Portfolio
+
+• SOL: 2 SOL
+• ETH: 1 ETH
+• UCT: 212 UCT
+• BTC: 0.02 BTC
+
+Total value: $3,334.35
+
+If the user asks unrelated questions, answer normally.
 `,
   },
 
