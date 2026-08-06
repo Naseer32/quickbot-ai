@@ -15,7 +15,7 @@ export default function WalletCard() {
 
       const result = await connectWallet();
 
-      setAddress(result.connection.identity?.directAddress || "--");
+      setAddress(cleanAddress || "--");
 
       const walletAssets = await result.client.query("sphere_getAssets");
 
@@ -33,17 +33,21 @@ alert(JSON.stringify(walletAssets, null, 2));
         (sum: number, asset: any) => sum + (asset.fiatValueUsd || 0),
         0
       );
-      localStorage.setItem(
+      const cleanAddress =
+  (result.connection.identity?.directAddress || "")
+    .replace("DIRECT://", "");
+
+localStorage.setItem(
   "quickbot-wallet",
   JSON.stringify({
-    address: result.connection.identity?.directAddress,
+    address: cleanAddress,
     assets: assetList,
     totalValue: total,
   })
 );
 
       setTotalValue(total);
-      setWalletName(result.connection.identity?.directAddress || "--");
+      setWalletName(cleanAddress || "--");
 
       // Automatically ask the wallet to sign
       const signed = await result.client.intent("sign_message", {
