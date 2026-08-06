@@ -24,6 +24,29 @@ const [conversations, setConversations] = useState(() => {
     "quickbot-chat",
     JSON.stringify(messages)
   );
+
+  if (messages.length > 1) {
+    const title =
+      messages.find((m) => m.sender === "user")?.text || "New Chat";
+
+    const updated = [
+      {
+        id: Date.now(),
+        title,
+        messages,
+      },
+      ...conversations.filter(
+        (c) => c.messages !== messages
+      ),
+    ];
+
+    setConversations(updated);
+
+    localStorage.setItem(
+      "quickbot-conversations",
+      JSON.stringify(updated)
+    );
+  }
 }, [messages]);
 
   async function sendMessage() {
