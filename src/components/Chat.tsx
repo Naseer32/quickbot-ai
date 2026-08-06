@@ -9,23 +9,55 @@ export default function Chat() {
   ]);
 
   const [input, setInput] = useState("");
+  const [loading, setLoading] = useState(false);
 
-  function sendMessage() {
+  async function sendMessage() {
     if (!input.trim()) return;
+
+    const userMessage = input;
 
     setMessages((prev) => [
       ...prev,
       {
         sender: "user",
-        text: input,
-      },
-      {
-        sender: "bot",
-        text: "🤖 AI integration coming soon.",
+        text: userMessage,
       },
     ]);
 
     setInput("");
+    setLoading(true);
+
+    try {
+      const response = await fetch("/api/chat", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          message: userMessage,
+        }),
+      });
+
+      const data = await response.json();
+
+      setMessages((prev) => [
+        ...prev,
+        {
+          sender: "bot",
+          text: data.reply,
+        },
+      ]);
+    } catch (error) {
+      setMessages((prev) => [
+        ...prev,
+        {
+          sender: "bot",
+          text: "❌ Failed to contact AI.",
+        },
+      ]);
+    }
+
+    setLoading(false);
   }
 
   return (
@@ -56,12 +88,21 @@ export default function Chat() {
             {msg.text}
           </p>
         ))}
+
+        {loading && (
+          <p>
+            <strong>🤖 AI:</strong> Thinking...
+          </p>
+        )}
       </div>
 
       <input
         value={input}
         onChange={(e) => setInput(e.target.value)}
-        placeholder="Ask about crypto..."
+        placeholder="Ask about Web3..."
+        onKeyDown={(e) => {
+          if (e.key === "Enter") sendMessage();
+        }}
         style={{
           width: "75%",
           padding: 10,
@@ -70,12 +111,13 @@ export default function Chat() {
 
       <button
         onClick={sendMessage}
+        disabled={loading}
         style={{
           marginLeft: 10,
           padding: "10px 20px",
         }}
       >
-        Send
+        {loading ? "..." : "Send"}
       </button>
     </div>
   );
