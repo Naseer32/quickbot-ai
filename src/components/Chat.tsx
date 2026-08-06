@@ -130,24 +130,52 @@ const [conversations, setConversations] = useState(() => {
 
   return (
     <div
-      style={{
-        marginTop: 30,
-        border: "1px solid #ddd",
-        borderRadius: 12,
-        padding: 20,
-      }}
-    >
-      <h3>🤖 QuickBot AI</h3>
-      <button
-  onClick={newChat}
   style={{
-    marginBottom: 15,
-    padding: "8px 16px",
+    marginTop: 30,
+    border: "1px solid #ddd",
+    borderRadius: 12,
+    padding: 20,
   }}
 >
-  🗑️ New Chat
-</button>
+  <div
+    style={{
+      display: "flex",
+      justifyContent: "space-between",
+      alignItems: "center",
+      marginBottom: 15,
+    }}
+  >
+    <h3>🤖 QuickBot AI</h3>
 
+    <div>
+      <button
+        onClick={newChat}
+        style={{
+          marginRight: 10,
+          padding: "8px 16px",
+        }}
+      >
+        🗑️ New Chat
+      </button>
+
+      <button
+        onClick={() => {
+          alert(
+            conversations.length
+              ? conversations
+                  .map((c, i) => `${i + 1}. ${c.title}`)
+                  .join("\n\n")
+              : "No saved chats."
+          );
+        }}
+        style={{
+          padding: "8px 16px",
+        }}
+      >
+        📜 History
+      </button>
+    </div>
+  </div>
       <div
         style={{
           height: 300,
