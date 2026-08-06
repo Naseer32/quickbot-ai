@@ -162,7 +162,7 @@ const [loading, setLoading] = useState(false);
       </button>
 
       <button
-        onClick={() => {
+        onClick={() => setShowHistory(!showHistory)}
           alert(
             conversations.length
               ? conversations
