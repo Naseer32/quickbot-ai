@@ -17,6 +17,7 @@ const [conversations, setConversations] = useState(() => {
   const saved = localStorage.getItem("quickbot-conversations");
   return saved ? JSON.parse(saved) : [];
 });
+  const [currentChatId, setCurrentChatId] = useState(() => Date.now());
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
   useEffect(() => {
