@@ -11,11 +11,8 @@ export async function connectWallet() {
       name: "QuickBot AI",
       url: window.location.origin,
     },
-
     walletUrl: "https://sphere.unicity.network",
-
     network: SPHERE_NETWORKS.testnet2,
-
     silent: false,
   });
 
