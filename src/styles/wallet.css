@@ -11,12 +11,47 @@
   --border: rgba(244,246,255,0.08);
 }
 
-.qb-app{
+body{
+  margin:0;
+  background:var(--void);
+}
+
+/* ---------- Page shell ---------- */
+.qb-page{
+  min-height:100vh;
+  background:var(--void);
+  color:var(--paper);
+  font-family:'Inter',sans-serif;
+}
+
+/* ---------- Header ---------- */
+.qb-header{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:8px;
+  padding:16px;
+  border-bottom:1px solid var(--border);
+  background:var(--void);
+}
+.qb-header-icon{font-size:18px;}
+.qb-header-title{
+  font-family:'Space Grotesk',sans-serif;
+  font-weight:700;
+  font-size:15px;
+  letter-spacing:-0.01em;
+  color:var(--paper);
+}
+
+/* ---------- App shell ---------- */
+.qb-main{
   max-width:480px;
   margin:0 auto;
-  min-height:100vh;
-  padding:20px 16px 32px;
-  background:var(--void);
+  padding:20px 16px 40px;
+}
+
+/* ---------- Wallet hero (orbital card) ---------- */
+.qb-app{
   color:var(--paper);
   font-family:'Inter',sans-serif;
 }
@@ -112,7 +147,6 @@
   padding:5px 9px;
   display:flex;align-items:center;gap:6px;
   cursor:pointer;
-  border-width:1px;
 }
 
 .qb-section-label{
@@ -157,3 +191,103 @@
 .qb-up{color:var(--signal);}
 .qb-down{color:#F87171;}
 .qb-no-data{color:var(--mist);font-style:normal;}
+
+/* ---------- Chat ---------- */
+.qb-chat-card{
+  margin-top:28px;
+  border:1px solid var(--border);
+  border-radius:16px;
+  background:var(--ink);
+  overflow:hidden;
+}
+.qb-chat-head{
+  padding:12px 16px;
+  border-bottom:1px solid var(--border);
+  display:flex;align-items:center;justify-content:space-between;
+}
+.qb-chat-head-title{
+  font-family:'Space Grotesk',sans-serif;font-weight:600;font-size:13px;
+  display:flex;align-items:center;gap:8px;
+}
+.qb-chat-head-title .qb-pulse-dot{width:7px;height:7px;border-radius:50%;background:var(--pulse);box-shadow:0 0 8px var(--pulse);}
+.qb-chat-actions{display:flex;gap:8px;}
+.qb-chat-action{
+  font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--mist);
+  background:rgba(244,246,255,0.05);
+  border:1px solid var(--border);
+  border-radius:8px;
+  padding:6px 10px;
+  cursor:pointer;
+}
+.qb-chat-action:hover{color:var(--paper);}
+
+.qb-history-panel{
+  border-bottom:1px solid var(--border);
+  padding:10px 16px;
+  max-height:180px;
+  overflow-y:auto;
+}
+.qb-history-empty{color:var(--mist);font-size:12px;margin:4px 0;}
+.qb-history-item{
+  display:block;
+  width:100%;
+  text-align:left;
+  background:none;
+  border:none;
+  color:var(--paper);
+  font-family:'Inter',sans-serif;
+  font-size:12.5px;
+  padding:8px 4px;
+  border-bottom:1px solid var(--border);
+  cursor:pointer;
+}
+.qb-history-item:last-child{border-bottom:none;}
+.qb-history-item:hover{color:var(--pulse);}
+
+.qb-chat-body{
+  padding:16px;
+  display:flex;flex-direction:column;gap:12px;
+  max-height:320px;
+  overflow-y:auto;
+}
+.qb-msg{max-width:82%;font-size:13.5px;line-height:1.5;padding:10px 13px;border-radius:12px;}
+.qb-msg.qb-ai{
+  background:var(--ink-2);align-self:flex-start;
+  border-bottom-left-radius:4px;
+}
+.qb-msg.qb-user{
+  background:linear-gradient(135deg, rgba(167,139,250,0.25), rgba(110,231,183,0.15));
+  align-self:flex-end;
+  border-bottom-right-radius:4px;
+}
+.qb-msg .qb-who{
+  font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:0.08em;text-transform:uppercase;
+  color:var(--mist);display:block;margin-bottom:4px;
+}
+
+.qb-chat-input-row{
+  display:flex;gap:8px;padding:12px 16px;border-top:1px solid var(--border);
+}
+.qb-chat-input{
+  flex:1;
+  background:rgba(244,246,255,0.05);
+  border:1px solid var(--border);
+  border-radius:10px;
+  padding:10px 12px;
+  color:var(--paper);
+  font-family:'Inter',sans-serif;
+  font-size:13px;
+}
+.qb-chat-input::placeholder{color:var(--mist);}
+.qb-send-btn{
+  background:var(--pulse);
+  border:none;border-radius:10px;
+  min-width:44px;
+  padding:0 14px;
+  color:var(--void);
+  font-weight:700;
+  font-family:'Space Grotesk',sans-serif;
+  font-size:13px;
+  cursor:pointer;
+}
+.qb-send-btn:disabled{opacity:0.5;cursor:default;}
