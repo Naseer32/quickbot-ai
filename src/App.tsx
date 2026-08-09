@@ -1,26 +1,14 @@
 import Header from "./components/Header";
 import WalletCard from "./components/WalletCard";
 import Chat from "./components/Chat";
+import "./styles/wallet.css";
 
 export default function App() {
   return (
-    <div>
+    <div className="qb-page">
       <Header />
 
-      <main
-        style={{
-          maxWidth: "800px",
-          margin: "40px auto",
-          padding: "20px",
-          fontFamily: "Arial, sans-serif",
-        }}
-      >
-        <h2>Welcome to QuickBot AI</h2>
-
-        <p>
-          Your AI-powered Web3 assistant built with the Unicity Sphere SDK.
-        </p>
-
+      <main className="qb-main">
         <WalletCard />
         <Chat />
       </main>
