@@ -1,57 +1,54 @@
 import { useState, useEffect } from "react";
+import "../styles/wallet.css";
 
 export default function Chat() {
   const [messages, setMessages] = useState(() => {
-  const saved = localStorage.getItem("quickbot-chat");
+    const saved = localStorage.getItem("quickbot-chat");
 
-  return saved
-    ? JSON.parse(saved)
-    : [
-        {
-          sender: "bot",
-          text: "👋 Hi! I'm QuickBot AI. Ask me anything about Web3.",
-        },
-      ];
-});
-const [conversations, setConversations] = useState(() => {
-  const saved = localStorage.getItem("quickbot-conversations");
-  return saved ? JSON.parse(saved) : [];
-});
+    return saved
+      ? JSON.parse(saved)
+      : [
+          {
+            sender: "bot",
+            text: "👋 Hi! I'm QuickBot AI. Ask me anything about Web3.",
+          },
+        ];
+  });
+  const [conversations, setConversations] = useState(() => {
+    const saved = localStorage.getItem("quickbot-conversations");
+    return saved ? JSON.parse(saved) : [];
+  });
   const [currentChatId, setCurrentChatId] = useState(() => Date.now());
 
-const [showHistory, setShowHistory] = useState(false);
+  const [showHistory, setShowHistory] = useState(false);
 
-const [input, setInput] = useState("");
-const [loading, setLoading] = useState(false);
+  const [input, setInput] = useState("");
+  const [loading, setLoading] = useState(false);
+
   useEffect(() => {
-  localStorage.setItem(
-    "quickbot-chat",
-    JSON.stringify(messages)
-  );
+    localStorage.setItem("quickbot-chat", JSON.stringify(messages));
 
-  if (messages.length > 1) {
-    const title =
-      messages.find((m) => m.sender === "user")?.text || "New Chat";
+    if (messages.length > 1) {
+      const title =
+        messages.find((m) => m.sender === "user")?.text || "New Chat";
 
-    const updated = [
-      {
-        id: currentChatId,
-        title,
-        messages,
-      },
-      ...conversations.filter(
-        (c) => c.id !== currentChatId
-      ),
-    ];
+      const updated = [
+        {
+          id: currentChatId,
+          title,
+          messages,
+        },
+        ...conversations.filter((c) => c.id !== currentChatId),
+      ];
 
-    setConversations(updated);
+      setConversations(updated);
 
-    localStorage.setItem(
-      "quickbot-conversations",
-      JSON.stringify(updated)
-    );
-  }
-}, [messages]);
+      localStorage.setItem(
+        "quickbot-conversations",
+        JSON.stringify(updated)
+      );
+    }
+  }, [messages]);
 
   async function sendMessage() {
     if (!input.trim()) return;
@@ -69,8 +66,8 @@ const [loading, setLoading] = useState(false);
     setInput("");
     setLoading(true);
     const wallet = JSON.parse(
-  localStorage.getItem("quickbot-wallet") || "{}"
-);
+      localStorage.getItem("quickbot-wallet") || "{}"
+    );
 
     try {
       const response = await fetch("/api/chat", {
@@ -79,15 +76,15 @@ const [loading, setLoading] = useState(false);
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-  messages: [
-    ...messages,
-    {
-      sender: "user",
-      text: userMessage,
-    },
-  ],
-  wallet,
-}),
+          messages: [
+            ...messages,
+            {
+              sender: "user",
+              text: userMessage,
+            },
+          ],
+          wallet,
+        }),
       });
 
       const data = await response.json();
@@ -111,152 +108,108 @@ const [loading, setLoading] = useState(false);
 
     setLoading(false);
   }
+
   function newChat() {
-  const newId = Date.now();
+    const newId = Date.now();
 
-  setCurrentChatId(newId);
+    setCurrentChatId(newId);
 
-  const welcome = [
-    {
-      sender: "bot",
-      text: "👋 Hi! I'm QuickBot AI. Ask me anything about Web3.",
-    },
-  ];
+    const welcome = [
+      {
+        sender: "bot",
+        text: "👋 Hi! I'm QuickBot AI. Ask me anything about Web3.",
+      },
+    ];
 
-  setMessages(welcome);
+    setMessages(welcome);
 
-  localStorage.setItem(
-    "quickbot-chat",
-    JSON.stringify(welcome)
-  );
+    localStorage.setItem("quickbot-chat", JSON.stringify(welcome));
   }
 
   return (
-    <div
-  style={{
-    marginTop: 30,
-    border: "1px solid #ddd",
-    borderRadius: 12,
-    padding: 20,
-  }}
->
-  <div
-    style={{
-      display: "flex",
-      justifyContent: "space-between",
-      alignItems: "center",
-      marginBottom: 15,
-    }}
-  >
-    <h3>🤖 QuickBot AI</h3>
+    <div className="qb-chat-card">
+      <div className="qb-chat-head">
+        <div className="qb-chat-head-title">
+          <span className="qb-pulse-dot" />
+          QuickBot AI
+        </div>
 
-    <div>
-      <button
-        onClick={newChat}
-        style={{
-          marginRight: 10,
-          padding: "8px 16px",
-        }}
-      >
-        🗑️ New Chat
-      </button>
+        <div className="qb-chat-actions">
+          <button className="qb-chat-action" onClick={newChat}>
+            🗑️ New Chat
+          </button>
+          <button
+            className="qb-chat-action"
+            onClick={() => setShowHistory(!showHistory)}
+          >
+            📜 History
+          </button>
+        </div>
+      </div>
 
-      <button
-        onClick={() => setShowHistory(!showHistory)}
-        style={{
-          padding: "8px 16px",
-        }}
-      >
-        📜 History
-      </button>
-    </div>
-  </div>
-    {showHistory && (
-  <div
-    style={{
-      border: "1px solid #ddd",
-      borderRadius: 8,
-      padding: 10,
-      marginBottom: 15,
-      maxHeight: 180,
-      overflowY: "auto",
-      background: "#fafafa",
-    }}
-  >
-    {conversations.length === 0 ? (
-      <p>No saved chats.</p>
-    ) : (
-      conversations.map((chat, index) => (
-        <button
-          key={chat.id ?? index}
-          onClick={() => {
-            setMessages(chat.messages);
-            setCurrentChatId(chat.id);
-            setShowHistory(false);
-          }}
-          style={{
-            display: "block",
-            width: "100%",
-            textAlign: "left",
-            marginBottom: 8,
-            padding: "8px",
-            cursor: "pointer",
-          }}
-        >
-          {chat.title}
-        </button>
-      ))
-    )}
-  </div>
-)}
-      <div
-        style={{
-          height: 300,
-          overflowY: "auto",
-          border: "1px solid #eee",
-          padding: 10,
-          marginBottom: 15,
-        }}
-      >
+      {showHistory && (
+        <div className="qb-history-panel">
+          {conversations.length === 0 ? (
+            <p className="qb-history-empty">No saved chats.</p>
+          ) : (
+            conversations.map((chat, index) => (
+              <button
+                key={chat.id ?? index}
+                className="qb-history-item"
+                onClick={() => {
+                  setMessages(chat.messages);
+                  setCurrentChatId(chat.id);
+                  setShowHistory(false);
+                }}
+              >
+                {chat.title}
+              </button>
+            ))
+          )}
+        </div>
+      )}
+
+      <div className="qb-chat-body">
         {messages.map((msg, index) => (
-          <p key={index}>
-            <strong>
-              {msg.sender === "bot" ? "🤖 AI" : "👤 You"}:
-            </strong>{" "}
+          <div
+            key={index}
+            className={`qb-msg ${msg.sender === "bot" ? "qb-ai" : "qb-user"}`}
+          >
+            <span className="qb-who">
+              {msg.sender === "bot" ? "QuickBot" : "You"}
+            </span>
             {msg.text}
-          </p>
+          </div>
         ))}
 
         {loading && (
-          <p>
-            <strong>🤖 AI:</strong> Thinking...
-          </p>
+          <div className="qb-msg qb-ai">
+            <span className="qb-who">QuickBot</span>
+            Thinking…
+          </div>
         )}
       </div>
 
-      <input
-        value={input}
-        onChange={(e) => setInput(e.target.value)}
-        placeholder="Ask about Web3..."
-        onKeyDown={(e) => {
-          if (e.key === "Enter") sendMessage();
-        }}
-        style={{
-          width: "75%",
-          padding: 10,
-        }}
-      />
+      <div className="qb-chat-input-row">
+        <input
+          className="qb-chat-input"
+          value={input}
+          onChange={(e) => setInput(e.target.value)}
+          placeholder="Ask about Web3…"
+          onKeyDown={(e) => {
+            if (e.key === "Enter") sendMessage();
+          }}
+        />
 
-      <button
-        onClick={sendMessage}
-        disabled={loading}
-        style={{
-          marginLeft: 10,
-          padding: "10px 20px",
-        }}
-      >
-        {loading ? "..." : "Send"}
-      </button>
+        <button
+          className="qb-send-btn"
+          onClick={sendMessage}
+          disabled={loading}
+        >
+          {loading ? "…" : "Send"}
+        </button>
+      </div>
     </div>
   );
-}
+      }
+
