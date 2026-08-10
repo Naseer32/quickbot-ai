@@ -30,17 +30,21 @@ export async function resolveTag(tag: string) {
 export async function sendAsset({
   to,
   amount,
-  coinId,
+  symbol,
 }: {
   to: string;
-  amount: string;
-  coinId: string;
+  amount: number;
+  symbol: string;
 }) {
-  const result = await connectWallet();
+  const result: any = await connectWallet();
 
-  return result.client.intent("send", {
-    to,
-    amount,
-    coinId,
+  if (!result?.payments) {
+    throw new Error("Sphere payment API is not available.");
+  }
+
+  return result.payments.send({
+    recipient: to,
+    amount: String(amount),
+    coinId: symbol.toUpperCase(),
   });
 }
