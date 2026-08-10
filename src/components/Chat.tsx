@@ -25,6 +25,9 @@ export default function Chat() {
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
 
+  const [editingIndex, setEditingIndex] = useState<number | null>(null);
+  const [editText, setEditText] = useState("");
+
   const bottomRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
@@ -57,20 +60,8 @@ export default function Chat() {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages, loading]);
 
-  async function sendMessage() {
-    if (!input.trim()) return;
-
-    const userMessage = input;
-
-    setMessages((prev) => [
-      ...prev,
-      {
-        sender: "user",
-        text: userMessage,
-      },
-    ]);
-
-    setInput("");
+  // Shared call to the AI — takes the full message list to send, appends the bot's reply
+  async function sendToApi(updatedMessages: any[]) {
     setLoading(true);
     const wallet = JSON.parse(
       localStorage.getItem("quickbot-wallet") || "{}"
@@ -83,29 +74,23 @@ export default function Chat() {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          messages: [
-            ...messages,
-            {
-              sender: "user",
-              text: userMessage,
-            },
-          ],
+          messages: updatedMessages,
           wallet,
         }),
       });
 
       const data = await response.json();
 
-      setMessages((prev) => [
-        ...prev,
+      setMessages([
+        ...updatedMessages,
         {
           sender: "bot",
           text: data.reply,
         },
       ]);
     } catch (error) {
-      setMessages((prev) => [
-        ...prev,
+      setMessages([
+        ...updatedMessages,
         {
           sender: "bot",
           text: "❌ Failed to contact AI.",
@@ -114,6 +99,18 @@ export default function Chat() {
     }
 
     setLoading(false);
+  }
+
+  async function sendMessage() {
+    if (!input.trim()) return;
+
+    const userMessage = input;
+    const updated = [...messages, { sender: "user", text: userMessage }];
+
+    setMessages(updated);
+    setInput("");
+
+    await sendToApi(updated);
   }
 
   function newChat() {
@@ -129,6 +126,7 @@ export default function Chat() {
     ];
 
     setMessages(welcome);
+    setEditingIndex(null);
 
     localStorage.setItem("quickbot-chat", JSON.stringify(welcome));
     setSidebarOpen(false);
@@ -137,6 +135,7 @@ export default function Chat() {
   function openConversation(chat: any) {
     setMessages(chat.messages);
     setCurrentChatId(chat.id);
+    setEditingIndex(null);
     setSidebarOpen(false);
   }
 
@@ -150,6 +149,32 @@ export default function Chat() {
     if (id === currentChatId) {
       newChat();
     }
+  }
+
+  function startEdit(index: number) {
+    setEditingIndex(index);
+    setEditText(messages[index].text);
+  }
+
+  function cancelEdit() {
+    setEditingIndex(null);
+    setEditText("");
+  }
+
+  // Saving an edit rewrites history from that point on: the edited prompt
+  // replaces the old one, and everything after it (including the old AI
+  // reply) is discarded, then a new AI reply is generated.
+  async function saveEdit(index: number) {
+    if (!editText.trim()) return;
+
+    const truncated = messages.slice(0, index);
+    const updated = [...truncated, { sender: "user", text: editText }];
+
+    setEditingIndex(null);
+    setEditText("");
+    setMessages(updated);
+
+    await sendToApi(updated);
   }
 
   return (
@@ -217,17 +242,57 @@ export default function Chat() {
       </div>
 
       <div className="qb-chat-body">
-        {messages.map((msg, index) => (
-          <div
-            key={index}
-            className={`qb-msg ${msg.sender === "bot" ? "qb-ai" : "qb-user"}`}
-          >
-            <span className="qb-who">
-              {msg.sender === "bot" ? "QuickBot" : "You"}
-            </span>
-            {msg.text}
-          </div>
-        ))}
+        {messages.map((msg, index) => {
+          const isUser = msg.sender === "user";
+          const isEditingThis = editingIndex === index;
+
+          if (isEditingThis) {
+            return (
+              <div className="qb-edit-box" key={index}>
+                <textarea
+                  className="qb-edit-textarea"
+                  value={editText}
+                  onChange={(e) => setEditText(e.target.value)}
+                  autoFocus
+                />
+                <div className="qb-edit-actions">
+                  <button className="qb-edit-cancel" onClick={cancelEdit}>
+                    Cancel
+                  </button>
+                  <button
+                    className="qb-edit-save"
+                    onClick={() => saveEdit(index)}
+                  >
+                    Save & resend
+                  </button>
+                </div>
+              </div>
+            );
+          }
+
+          return (
+            <div
+              className={`qb-msg-row ${
+                isUser ? "qb-row-user" : "qb-row-ai"
+              }`}
+              key={index}
+            >
+              <div className={`qb-msg ${isUser ? "qb-user" : "qb-ai"}`}>
+                <span className="qb-who">{isUser ? "You" : "QuickBot"}</span>
+                {msg.text}
+              </div>
+
+              {isUser && !loading && (
+                <button
+                  className="qb-msg-edit-btn"
+                  onClick={() => startEdit(index)}
+                >
+                  ✎ Edit
+                </button>
+              )}
+            </div>
+          );
+        })}
 
         {loading && (
           <div className="qb-msg qb-ai">
