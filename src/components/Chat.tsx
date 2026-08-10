@@ -168,10 +168,10 @@ export default function Chat() {
       setSendStatus(`Sending ${amount} ${symbol} to ${tag}…`);
 
       await sendAsset({
-        to: address,
-        amount: Number(amount),
-        symbol,
-      });
+  to: address,
+  amount: Number(amount),
+  coinId: symbol,
+});
 
       setMessages((prev) => [
         ...prev,
