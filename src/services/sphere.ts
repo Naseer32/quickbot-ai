@@ -34,5 +34,6 @@ export async function sendAsset({
   symbol: string;
 }) {
   const result = await connectWallet();
-  return result.client.intent("send", { to, amount, symbol });
+  return result.client.intent("send", { identifier: to, amount, symbol });
 }
+
