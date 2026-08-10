@@ -21,19 +21,26 @@ export async function connectWallet() {
 
 export async function resolveTag(tag: string) {
   const result = await connectWallet();
-  return result.client.query("sphere_resolve", { nametag: tag });
+
+  return result.client.query("sphere_resolve", {
+    identifier: tag,
+  });
 }
 
 export async function sendAsset({
   to,
   amount,
-  symbol,
+  coinId,
 }: {
   to: string;
-  amount: number;
-  symbol: string;
+  amount: string;
+  coinId: string;
 }) {
   const result = await connectWallet();
-  return result.client.intent("send", { identifier: to, amount, symbol });
-}
 
+  return result.client.intent("send", {
+    to,
+    amount,
+    coinId,
+  });
+}
