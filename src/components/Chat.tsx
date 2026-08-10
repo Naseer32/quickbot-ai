@@ -154,6 +154,10 @@ export default function Chat() {
         throw new Error(`Could not resolve ${tag} to an address.`);
       }
 
+      if (!address) {
+        throw new Error(`Could not resolve ${tag} to an address.`);
+      }
+
       setSendStatus(`Sending ${amount} ${symbol} to ${tag}…`);
 
       await sendAsset({
