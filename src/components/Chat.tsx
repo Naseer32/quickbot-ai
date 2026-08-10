@@ -155,7 +155,10 @@ export default function Chat() {
       alert("resolveTag returned: " + JSON.stringify(resolved, null, 2));
 
       const address =
-  resolved?.directAddress ?? resolved?.result?.directAddress;
+  resolved?.directAddress ??
+  resolved?.result?.directAddress ??
+  resolved?.address ??
+  resolved?.result?.address;
 
       if (!address) {
         throw new Error(`Could not resolve ${tag} to an address.`);
