@@ -1,3 +1,4 @@
+import { getCoinIdBySymbol } from "@unicitylabs/sphere-sdk";
 import { autoConnect } from "@unicitylabs/sphere-sdk/connect/browser";
 import { SPHERE_NETWORKS } from "@unicitylabs/sphere-sdk/connect";
 
@@ -36,15 +37,24 @@ export async function sendAsset({
   amount: number;
   symbol: string;
 }) {
-  const result: any = await connectWallet();
+  const result = await connectWallet();
 
-  if (!result?.payments) {
-    throw new Error("Sphere payment API is not available.");
+  const coinId = getCoinIdBySymbol(symbol.toUpperCase());
+
+  if (!coinId) {
+    throw new Error(`Could not find coin ID for ${symbol}.`);
   }
 
-  return result.payments.send({
-    recipient: to,
+  console.log("Sending with:", {
+    to,
+    amount,
+    symbol,
+    coinId,
+  });
+
+  return result.client.intent("send", {
+    to,
     amount: String(amount),
-    coinId: symbol.toUpperCase(),
+    coinId,
   });
 }
