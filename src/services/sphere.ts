@@ -18,11 +18,10 @@ export async function connectWallet() {
 
   return connection;
 }
+
 export async function resolveTag(tag: string) {
   const result = await connectWallet();
-  // Best-guess parameter name — if this errors, the message will tell us
-  // the actual expected field name so we can adjust.
-  return result.client.query("sphere_resolve", { tag });
+  return result.client.query("sphere_resolve", { nametag: tag });
 }
 
 export async function sendAsset({
@@ -37,4 +36,3 @@ export async function sendAsset({
   const result = await connectWallet();
   return result.client.intent("send", { to, amount, symbol });
 }
-
