@@ -1,77 +1,28 @@
-import { Sphere } from "@unicitylabs/sphere-sdk";
-import { createBrowserProviders } from "@unicitylabs/sphere-sdk/impl/browser";
-import { createWalletApiProviders } from "@unicitylabs/sphere-sdk/impl/shared/wallet-api";
+import { autoConnect } from "@unicitylabs/sphere-sdk/connect/browser";
+import { SPHERE_NETWORKS } from "@unicitylabs/sphere-sdk/connect";
 
-let sphere: any = null;
+let connection: any = null;
 
 export async function connectWallet() {
-  if (sphere) return sphere;
+  if (connection) return connection;
 
-  const base = createBrowserProviders({
-    network: "testnet",
-    oracle: {
-      apiKey: "sk_ddc3cfcc001e4a28ac3fad7407f99590",
+  connection = await autoConnect({
+    dapp: {
+      name: "QuickBot AI",
+      url: window.location.origin,
     },
+    walletUrl: "https://sphere.unicity.network",
+    network: SPHERE_NETWORKS.testnet2,
+    silent: false,
   });
 
-  const providers = createWalletApiProviders(base, {
-    baseUrl: "https://wallet-api.unicity.network",
-    network: "testnet2",
-    deviceId: "quickbot-ai-device",
-  });
-
-  const result = await Sphere.init({
-    ...providers,
-    autoGenerate: true,
-  });
-
-  sphere = result.sphere;
-
-  return sphere;
+  return connection;
 }
 
-export async function resolveTag(tag: string) {
-  const wallet = await connectWallet();
-
-  const cleanTag = tag.startsWith("@") ? tag : `@${tag}`;
-
-  return wallet.query("sphere_resolve", {
-    identifier: cleanTag,
-  });
-}
-
-export async function getAssets() {
-  const wallet = await connectWallet();
-
-  return wallet.payments.assets();
-}
-
-export async function sendAsset({
-  to,
-  amount,
-  symbol,
-}: {
-  to: string;
-  amount: number;
-  symbol: string;
-}) {
-  const wallet = await connectWallet();
-
-  const cleanRecipient = to.startsWith("@") ? to : `@${to}`;
-
-  if (symbol.toUpperCase() !== "UCT") {
-    throw new Error(`Unsupported testnet coin: ${symbol}`);
-  }
-
-  console.log("Sending:", {
-    recipient: cleanRecipient,
-    amount: String(amount),
-    coinId: "UCT",
-  });
-
-  return wallet.payments.send({
-    recipient: cleanRecipient,
-    amount: String(amount),
-    coinId: "UCT",
-  });
+export function formatBalance(confirmedAmount: any, decimals: number): string {
+  const rawValue = Number(confirmedAmount) / Math.pow(10, decimals);
+  return new Intl.NumberFormat(undefined, {
+    notation: "compact",
+    maximumFractionDigits: 2,
+  }).format(rawValue);
 }
