@@ -23,8 +23,10 @@ export async function connectWallet() {
 export async function resolveTag(tag: string) {
   const result = await connectWallet();
 
+  const identifier = tag.startsWith("@") ? tag.slice(1) : tag;
+
   return result.client.query("sphere_resolve", {
-    identifier: tag,
+    identifier,
   });
 }
 
@@ -39,22 +41,32 @@ export async function sendAsset({
 }) {
   const result = await connectWallet();
 
-  const coinId = getCoinIdBySymbol(symbol.toUpperCase());
-
-  if (!coinId) {
-    throw new Error(`Could not find coin ID for ${symbol}.`);
+  if (!to) {
+    throw new Error("Missing recipient address.");
   }
 
-  console.log("Sending with:", {
+  if (!symbol) {
+    throw new Error("Missing coin symbol.");
+  }
+
+  const normalizedSymbol = symbol.trim().toUpperCase();
+
+  const coinId = getCoinIdBySymbol(normalizedSymbol);
+
+  if (!coinId) {
+    throw new Error(`Could not find coin ID for ${normalizedSymbol}.`);
+  }
+
+  console.log("QuickBot send:", {
     to,
     amount,
-    symbol,
+    symbol: normalizedSymbol,
     coinId,
   });
 
   return result.client.intent("send", {
     to,
-    amount: String(amount),
+    amount: String(Math.round(amount * 1_000_000)),
     coinId,
   });
 }
