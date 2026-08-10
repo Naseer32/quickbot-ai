@@ -170,7 +170,7 @@ export default function Chat() {
       await sendAsset({
   to: address,
   amount: Number(amount),
-  coinId: symbol,
+  symbol,
 });
 
       setMessages((prev) => [
