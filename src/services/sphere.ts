@@ -1,33 +1,49 @@
-import { getCoinIdBySymbol } from "@unicitylabs/sphere-sdk";
-import { autoConnect } from "@unicitylabs/sphere-sdk/connect/browser";
-import { SPHERE_NETWORKS } from "@unicitylabs/sphere-sdk/connect";
+import { Sphere } from "@unicitylabs/sphere-sdk";
+import { createBrowserProviders } from "@unicitylabs/sphere-sdk/impl/browser";
+import { createWalletApiProviders } from "@unicitylabs/sphere-sdk/impl/shared/wallet-api";
 
-let connection: any = null;
+let sphere: any = null;
 
 export async function connectWallet() {
-  if (connection) return connection;
+  if (sphere) return sphere;
 
-  connection = await autoConnect({
-    dapp: {
-      name: "QuickBot AI",
-      url: window.location.origin,
+  const base = createBrowserProviders({
+    network: "testnet",
+    oracle: {
+      apiKey: "sk_ddc3cfcc001e4a28ac3fad7407f99590",
     },
-    walletUrl: "https://sphere.unicity.network",
-    network: SPHERE_NETWORKS.testnet2,
-    silent: false,
   });
 
-  return connection;
+  const providers = createWalletApiProviders(base, {
+    baseUrl: "https://wallet-api.unicity.network",
+    network: "testnet2",
+    deviceId: "quickbot-ai-device",
+  });
+
+  const result = await Sphere.init({
+    ...providers,
+    autoGenerate: true,
+  });
+
+  sphere = result.sphere;
+
+  return sphere;
 }
 
 export async function resolveTag(tag: string) {
-  const result = await connectWallet();
+  const wallet = await connectWallet();
 
-  const identifier = tag.startsWith("@") ? tag.slice(1) : tag;
+  const cleanTag = tag.startsWith("@") ? tag : `@${tag}`;
 
-  return result.client.query("sphere_resolve", {
-    identifier,
+  return wallet.query("sphere_resolve", {
+    identifier: cleanTag,
   });
+}
+
+export async function getAssets() {
+  const wallet = await connectWallet();
+
+  return wallet.payments.assets();
 }
 
 export async function sendAsset({
@@ -39,34 +55,23 @@ export async function sendAsset({
   amount: number;
   symbol: string;
 }) {
-  const result = await connectWallet();
+  const wallet = await connectWallet();
 
-  if (!to) {
-    throw new Error("Missing recipient address.");
+  const cleanRecipient = to.startsWith("@") ? to : `@${to}`;
+
+  if (symbol.toUpperCase() !== "UCT") {
+    throw new Error(`Unsupported testnet coin: ${symbol}`);
   }
 
-  if (!symbol) {
-    throw new Error("Missing coin symbol.");
-  }
-
-  const normalizedSymbol = symbol.trim().toUpperCase();
-
-  const coinId = getCoinIdBySymbol(normalizedSymbol);
-
-  if (!coinId) {
-    throw new Error(`Could not find coin ID for ${normalizedSymbol}.`);
-  }
-
-  console.log("QuickBot send:", {
-    to,
-    amount,
-    symbol: normalizedSymbol,
-    coinId,
+  console.log("Sending:", {
+    recipient: cleanRecipient,
+    amount: String(amount),
+    coinId: "UCT",
   });
 
-  return result.client.intent("send", {
-    to,
-    amount: String(Math.round(amount * 1_000_000)),
-    coinId,
+  return wallet.payments.send({
+    recipient: cleanRecipient,
+    amount: String(amount),
+    coinId: "UCT",
   });
 }
