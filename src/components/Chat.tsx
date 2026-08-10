@@ -147,6 +147,10 @@ export default function Chat() {
 
     try {
       const resolved: any = await resolveTag(tag);
+
+      // TEMPORARY DEBUG — shows us the exact shape of the response
+      alert("resolveTag returned: " + JSON.stringify(resolved, null, 2));
+
       const address =
         resolved?.address ?? resolved?.result?.address ?? resolved;
 
