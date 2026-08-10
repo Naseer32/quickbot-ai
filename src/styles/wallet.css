@@ -408,3 +408,65 @@ body{
   cursor:pointer;
   font-size:14px;
   }
+
+/* ---------- Message edit ---------- */
+.qb-msg-row{
+  display:flex;
+  flex-direction:column;
+}
+.qb-msg-row.qb-row-user{align-items:flex-end;}
+.qb-msg-row.qb-row-ai{align-items:flex-start;}
+
+.qb-msg-edit-btn{
+  background:none;
+  border:none;
+  color:var(--mist);
+  font-size:11px;
+  font-family:'IBM Plex Mono',monospace;
+  cursor:pointer;
+  margin-top:3px;
+  padding:2px 4px;
+}
+.qb-msg-edit-btn:hover{color:var(--pulse);}
+
+.qb-edit-box{
+  max-width:82%;
+  align-self:flex-end;
+  display:flex;
+  flex-direction:column;
+  gap:6px;
+}
+.qb-edit-textarea{
+  width:100%;
+  min-height:60px;
+  background:rgba(244,246,255,0.05);
+  border:1px solid var(--pulse);
+  border-radius:10px;
+  padding:10px 12px;
+  color:var(--paper);
+  font-family:'Inter',sans-serif;
+  font-size:13.5px;
+  resize:vertical;
+}
+.qb-edit-actions{
+  display:flex;
+  justify-content:flex-end;
+  gap:8px;
+}
+.qb-edit-cancel, .qb-edit-save{
+  border:none;
+  border-radius:8px;
+  padding:6px 12px;
+  font-family:'IBM Plex Mono',monospace;
+  font-size:11px;
+  cursor:pointer;
+}
+.qb-edit-cancel{
+  background:rgba(244,246,255,0.06);
+  color:var(--mist);
+}
+.qb-edit-save{
+  background:var(--pulse);
+  color:var(--void);
+  font-weight:700;
+}
