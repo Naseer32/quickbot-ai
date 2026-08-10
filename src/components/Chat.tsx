@@ -111,14 +111,17 @@ export default function Chat() {
     setLoading(false);
   }
 
-  async function sendMessage() {
+    async function sendMessage() {
     if (!input.trim()) return;
 
     const userMessage = input;
 
-    // Check for a send command before treating this as a normal chat message
+    // TEMPORARY DEBUG
     const match = userMessage.match(SEND_PATTERN);
+    alert("Input: [" + userMessage + "]\nMatched: " + (match ? "YES" : "NO"));
+
     if (match) {
+      
       const [, amount, symbol, tag] = match;
 
       setMessages((prev) => [
