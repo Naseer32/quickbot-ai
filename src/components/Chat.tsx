@@ -20,7 +20,7 @@ export default function Chat() {
   });
   const [currentChatId, setCurrentChatId] = useState(() => Date.now());
 
-  const [showHistory, setShowHistory] = useState(false);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
 
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
@@ -124,50 +124,90 @@ export default function Chat() {
     setMessages(welcome);
 
     localStorage.setItem("quickbot-chat", JSON.stringify(welcome));
+    setSidebarOpen(false);
+  }
+
+  function openConversation(chat: any) {
+    setMessages(chat.messages);
+    setCurrentChatId(chat.id);
+    setSidebarOpen(false);
+  }
+
+  function deleteConversation(id: number, e: React.MouseEvent) {
+    e.stopPropagation();
+
+    const updated = conversations.filter((c) => c.id !== id);
+    setConversations(updated);
+    localStorage.setItem("quickbot-conversations", JSON.stringify(updated));
+
+    if (id === currentChatId) {
+      newChat();
+    }
   }
 
   return (
     <div className="qb-chat-card">
+      {sidebarOpen && (
+        <>
+          <div
+            className="qb-sidebar-overlay"
+            onClick={() => setSidebarOpen(false)}
+          />
+          <div className="qb-sidebar">
+            <div className="qb-sidebar-header">
+              <div className="qb-sidebar-title">🤖 QuickBot AI</div>
+              <button className="qb-sidebar-newchat" onClick={newChat}>
+                ✚ New chat
+              </button>
+            </div>
+
+            <div className="qb-sidebar-list">
+              {conversations.length === 0 ? (
+                <p className="qb-sidebar-empty">No saved chats yet.</p>
+              ) : (
+                conversations.map((chat, index) => (
+                  <button
+                    key={chat.id ?? index}
+                    className={`qb-sidebar-item ${
+                      chat.id === currentChatId ? "qb-active" : ""
+                    }`}
+                    onClick={() => openConversation(chat)}
+                  >
+                    <span className="qb-sidebar-item-title">
+                      {chat.title}
+                    </span>
+                    <span
+                      className="qb-sidebar-delete"
+                      onClick={(e) => deleteConversation(chat.id, e)}
+                    >
+                      ✕
+                    </span>
+                  </button>
+                ))
+              )}
+            </div>
+          </div>
+        </>
+      )}
+
       <div className="qb-chat-head">
+        <button
+          className="qb-menu-btn"
+          onClick={() => setSidebarOpen(true)}
+          aria-label="Chat history"
+        >
+          ☰
+        </button>
+
         <div className="qb-chat-head-title">
           <span className="qb-pulse-dot" />
           QuickBot AI
         </div>
 
-        <div className="qb-chat-actions">
-          <button className="qb-chat-action" onClick={newChat}>
-            🗑️ New Chat
-          </button>
-          <button
-            className="qb-chat-action"
-            onClick={() => setShowHistory(!showHistory)}
-          >
-            📜 History
-          </button>
-        </div>
+        <button className="qb-menu-btn" onClick={newChat} aria-label="New chat">
+          ✚
+        </button>
       </div>
-
-      {showHistory && (
-        <div className="qb-history-panel">
-          {conversations.length === 0 ? (
-            <p className="qb-history-empty">No saved chats.</p>
-          ) : (
-            conversations.map((chat, index) => (
-              <button
-                key={chat.id ?? index}
-                className="qb-history-item"
-                onClick={() => {
-                  setMessages(chat.messages);
-                  setCurrentChatId(chat.id);
-                  setShowHistory(false);
-                }}
-              >
-                {chat.title}
-              </button>
-            ))
-          )}
-        </div>
-      )}
 
       <div className="qb-chat-body">
         {messages.map((msg, index) => (
@@ -211,5 +251,4 @@ export default function Chat() {
       </div>
     </div>
   );
-      }
-
+                      }
