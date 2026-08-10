@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import "../styles/wallet.css";
 
 export default function Chat() {
@@ -25,6 +25,8 @@ export default function Chat() {
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
 
+  const bottomRef = useRef<HTMLDivElement | null>(null);
+
   useEffect(() => {
     localStorage.setItem("quickbot-chat", JSON.stringify(messages));
 
@@ -49,6 +51,11 @@ export default function Chat() {
       );
     }
   }, [messages]);
+
+  // Auto-scroll to the latest message whenever messages change or the bot starts/stops "thinking"
+  useEffect(() => {
+    bottomRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [messages, loading]);
 
   async function sendMessage() {
     if (!input.trim()) return;
@@ -228,6 +235,8 @@ export default function Chat() {
             Thinking…
           </div>
         )}
+
+        <div ref={bottomRef} />
       </div>
 
       <div className="qb-chat-input-row">
@@ -251,4 +260,4 @@ export default function Chat() {
       </div>
     </div>
   );
-                      }
+}
