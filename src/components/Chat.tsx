@@ -1,5 +1,9 @@
 import { useState, useEffect, useRef } from "react";
+import { resolveTag, sendAsset } from "../services/sphere";
 import "../styles/wallet.css";
+
+// Matches things like: "send 2 UCT to @nass"
+const SEND_PATTERN = /send\s+([\d.]+)\s+([a-zA-Z]+)\s+to\s+(@[\w.-]+)/i;
 
 export default function Chat() {
   const [messages, setMessages] = useState(() => {
@@ -28,6 +32,14 @@ export default function Chat() {
   const [editingIndex, setEditingIndex] = useState<number | null>(null);
   const [editText, setEditText] = useState("");
 
+  // Pending send command awaiting user confirmation
+  const [pendingSend, setPendingSend] = useState<{
+    amount: string;
+    symbol: string;
+    tag: string;
+  } | null>(null);
+  const [sendStatus, setSendStatus] = useState<string | null>(null);
+
   const bottomRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
@@ -55,12 +67,10 @@ export default function Chat() {
     }
   }, [messages]);
 
-  // Auto-scroll to the latest message whenever messages change or the bot starts/stops "thinking"
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [messages, loading]);
+  }, [messages, loading, pendingSend, sendStatus]);
 
-  // Shared call to the AI — takes the full message list to send, appends the bot's reply
   async function sendToApi(updatedMessages: any[]) {
     setLoading(true);
     const wallet = JSON.parse(
@@ -105,12 +115,79 @@ export default function Chat() {
     if (!input.trim()) return;
 
     const userMessage = input;
+
+    // Check for a send command before treating this as a normal chat message
+    const match = userMessage.match(SEND_PATTERN);
+    if (match) {
+      const [, amount, symbol, tag] = match;
+
+      setMessages((prev) => [
+        ...prev,
+        { sender: "user", text: userMessage },
+      ]);
+      setInput("");
+      setPendingSend({ amount, symbol: symbol.toUpperCase(), tag });
+      return;
+    }
+
     const updated = [...messages, { sender: "user", text: userMessage }];
 
     setMessages(updated);
     setInput("");
 
     await sendToApi(updated);
+  }
+
+  async function confirmSend() {
+    if (!pendingSend) return;
+
+    const { amount, symbol, tag } = pendingSend;
+    setPendingSend(null);
+    setSendStatus(`Resolving ${tag}…`);
+
+    try {
+      const resolved: any = await resolveTag(tag);
+      const address =
+        resolved?.address ?? resolved?.result?.address ?? resolved;
+
+      if (!address) {
+        throw new Error(`Could not resolve ${tag} to an address.`);
+      }
+
+      setSendStatus(`Sending ${amount} ${symbol} to ${tag}…`);
+
+      await sendAsset({
+        to: address,
+        amount: Number(amount),
+        symbol,
+      });
+
+      setMessages((prev) => [
+        ...prev,
+        {
+          sender: "bot",
+          text: `✅ Sent ${amount} ${symbol} to ${tag}. Check your wallet to confirm it went through.`,
+        },
+      ]);
+    } catch (err: any) {
+      setMessages((prev) => [
+        ...prev,
+        {
+          sender: "bot",
+          text: `❌ Send failed: ${err?.message || "Unknown error"}`,
+        },
+      ]);
+    }
+
+    setSendStatus(null);
+  }
+
+  function cancelSend() {
+    setPendingSend(null);
+    setMessages((prev) => [
+      ...prev,
+      { sender: "bot", text: "Send cancelled." },
+    ]);
   }
 
   function newChat() {
@@ -127,6 +204,7 @@ export default function Chat() {
 
     setMessages(welcome);
     setEditingIndex(null);
+    setPendingSend(null);
 
     localStorage.setItem("quickbot-chat", JSON.stringify(welcome));
     setSidebarOpen(false);
@@ -136,6 +214,7 @@ export default function Chat() {
     setMessages(chat.messages);
     setCurrentChatId(chat.id);
     setEditingIndex(null);
+    setPendingSend(null);
     setSidebarOpen(false);
   }
 
@@ -161,9 +240,6 @@ export default function Chat() {
     setEditText("");
   }
 
-  // Saving an edit rewrites history from that point on: the edited prompt
-  // replaces the old one, and everything after it (including the old AI
-  // reply) is discarded, then a new AI reply is generated.
   async function saveEdit(index: number) {
     if (!editText.trim()) return;
 
@@ -294,6 +370,36 @@ export default function Chat() {
           );
         })}
 
+        {pendingSend && (
+          <div className="qb-msg qb-ai" style={{ borderColor: "var(--pulse)" }}>
+            <span className="qb-who">Confirm send</span>
+            Send <strong>{pendingSend.amount} {pendingSend.symbol}</strong> to{" "}
+            <strong>{pendingSend.tag}</strong>?
+            <div
+              style={{
+                display: "flex",
+                gap: "8px",
+                marginTop: "10px",
+                justifyContent: "flex-end",
+              }}
+            >
+              <button className="qb-edit-cancel" onClick={cancelSend}>
+                Cancel
+              </button>
+              <button className="qb-edit-save" onClick={confirmSend}>
+                Confirm
+              </button>
+            </div>
+          </div>
+        )}
+
+        {sendStatus && (
+          <div className="qb-msg qb-ai">
+            <span className="qb-who">QuickBot</span>
+            {sendStatus}
+          </div>
+        )}
+
         {loading && (
           <div className="qb-msg qb-ai">
             <span className="qb-who">QuickBot</span>
@@ -309,7 +415,7 @@ export default function Chat() {
           className="qb-chat-input"
           value={input}
           onChange={(e) => setInput(e.target.value)}
-          placeholder="Ask about Web3…"
+          placeholder="Ask about Web3, or: send 2 UCT to @nass"
           onKeyDown={(e) => {
             if (e.key === "Enter") sendMessage();
           }}
@@ -325,4 +431,5 @@ export default function Chat() {
       </div>
     </div>
   );
-}
+  }
+        
