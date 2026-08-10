@@ -111,17 +111,14 @@ export default function Chat() {
     setLoading(false);
   }
 
-    async function sendMessage() {
+  async function sendMessage() {
     if (!input.trim()) return;
 
     const userMessage = input;
 
-    // TEMPORARY DEBUG
+    // Check for a send command before treating this as a normal chat message
     const match = userMessage.match(SEND_PATTERN);
-    alert("Input: [" + userMessage + "]\nMatched: " + (match ? "YES" : "NO"));
-
     if (match) {
-      
       const [, amount, symbol, tag] = match;
 
       setMessages((prev) => [
@@ -150,28 +147,20 @@ export default function Chat() {
 
     try {
       const resolved: any = await resolveTag(tag);
-
-      // TEMPORARY DEBUG — shows us the exact shape of the response
-      alert("resolveTag returned: " + JSON.stringify(resolved, null, 2));
-
       const address =
-  resolved?.directAddress ??
-  resolved?.result?.directAddress ??
-  resolved?.address ??
-  resolved?.result?.address;
+        resolved?.address ?? resolved?.result?.address ?? resolved;
 
       if (!address) {
         throw new Error(`Could not resolve ${tag} to an address.`);
       }
 
-
       setSendStatus(`Sending ${amount} ${symbol} to ${tag}…`);
 
       await sendAsset({
-  to: address,
-  amount: Number(amount),
-  symbol,
-});
+        to: address,
+        amount: Number(amount),
+        symbol,
+      });
 
       setMessages((prev) => [
         ...prev,
@@ -442,5 +431,4 @@ export default function Chat() {
       </div>
     </div>
   );
-  }
-        
+}
