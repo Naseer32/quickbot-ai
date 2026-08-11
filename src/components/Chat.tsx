@@ -415,7 +415,7 @@ export default function Chat() {
           className="qb-chat-input"
           value={input}
           onChange={(e) => setInput(e.target.value)}
-          placeholder="Ask about Web3, or: send 2 UCT to @nass"
+          placeholder="Ask about Web3…".
           onKeyDown={(e) => {
             if (e.key === "Enter") sendMessage();
           }}
